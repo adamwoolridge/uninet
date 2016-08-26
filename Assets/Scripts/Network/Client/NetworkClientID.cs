@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NetworkClient
+public class NetworkClientID
 {
     public int ID;
 
-    public NetworkClient(int id)
+    public NetworkClientID(int id)
     {
         ID = id;
     }

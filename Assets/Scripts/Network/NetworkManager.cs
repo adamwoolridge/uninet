@@ -14,7 +14,7 @@ public class NetworkManager : MonoBehaviour
     int socketPort = 8888;
     int clientConnectionID;
 
-    private Dictionary<int, NetworkClient> clients = new Dictionary<int, NetworkClient>();
+    private Dictionary<int, NetworkClientID> clients = new Dictionary<int, NetworkClientID>();
 
     // Have both just to make the code nicer to read
     public static bool IsServer = false;
@@ -64,7 +64,7 @@ public class NetworkManager : MonoBehaviour
     {
         if (IsServer)
         {
-            clients.Add(id, new NetworkClient(id));
+            clients.Add(id, new NetworkClientID(id));
         }        
         
         Debug.Log("Client connected with ID: " + id);
@@ -100,10 +100,11 @@ public class NetworkManager : MonoBehaviour
                 ClientConnected(recConnectionId);
                 break;
             case NetworkEventType.DataEvent:
-                NetworkMessage message = new NetworkMessage(recBuffer);
-                DebugLog(message.ReadVector3().ToString());
-                DebugLog(message.ReadQuaternion().ToString());
-                                                            
+                NetworkMessage message = new NetworkMessage(recBuffer);                
+                if (IsServer)                
+                    ServerConnection.ReceivedMessage(message);                
+                if (IsClient)                
+                    ClientConnection.ReceivedMessage(message);                                                                                                
                 break;
             case NetworkEventType.DisconnectEvent:
                 ClientDisconnected(recConnectionId);
@@ -138,7 +139,7 @@ public class NetworkManager : MonoBehaviour
         message.Write(new Vector3(1f, 2f, 3f));
         message.Write(new Quaternion(4f, 5f, 6f, 7f));
 
-        foreach (KeyValuePair<int, NetworkClient> client in clients)
+        foreach (KeyValuePair<int, NetworkClientID> client in clients)
         {
             Send(client.Key, message);            
         }        

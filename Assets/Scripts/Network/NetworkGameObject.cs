@@ -15,7 +15,7 @@ public class NetworkGameObject : MonoBehaviour
         if (NetworkManager.IsServer)
         {
             Init(EntityManager.GetNew());
-        }
+        }        
     }
     
     public void Init(NetworkEntity entity)

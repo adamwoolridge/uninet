@@ -3,3 +3,4 @@ Temp/
 *.suo
 *.csproj
 *.sln
+Build/
