@@ -4,7 +4,6 @@ using UnityEngine.Networking;
 
 public class NetworkGameObject : MonoBehaviour
 {
-
     public int TicksPerSecond = 10;
 
     protected NetworkEntity networkEntity;

@@ -19,7 +19,9 @@ public static class ClientConnection
 
     private static void OnEntityUpdate(NetworkMessage message)
     {
+        // Create the entity locally if it doesn't exist our end
 
+        // Or just update it if it does
     }
 }
 
