@@ -15,6 +15,7 @@ public class TestSpawn : MonoBehaviour {
         if (!spawned && NetworkManager.IsServer && NetworkManager.connected)
         {
             NetworkEntity netEnt = GetComponent<NetworkEntity>();
+            netEnt.locallyControlled = true;
 
             // Server side would call this        
             EntityManager.Register(netEnt);

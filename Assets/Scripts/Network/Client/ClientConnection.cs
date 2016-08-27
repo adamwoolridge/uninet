@@ -20,8 +20,7 @@ public static class ClientConnection
                 {
                     OnEntityDestroyed(message);                    
                     return;                  
-                }
-                
+                }                
         }
     }
 
@@ -43,8 +42,8 @@ public static class ClientConnection
             ent = box.AddComponent<NetworkEntity>();            
             EntityManager.Register(ent, id);
         }
-        ent.transform.position = message.ReadVector3();        
-        ent.transform.rotation = message.ReadQuaternion();
+
+        ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
     }
 }
 

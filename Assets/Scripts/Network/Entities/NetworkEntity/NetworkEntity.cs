@@ -5,9 +5,14 @@ using UnityEngine.Networking;
 public partial class NetworkEntity : MonoBehaviour
 {
     public int TicksPerSecond = 10;
-
+    
     public Networkable networkable;
-  
+
+    public bool locallyControlled = false;
+
+    Vector3 realPos;
+    Quaternion realRot;
+
     public void Init(Networkable net)
     {
         networkable = net;
@@ -21,6 +26,15 @@ public partial class NetworkEntity : MonoBehaviour
         }
     }    
  
+    public void Update()
+    {
+        if (!locallyControlled)
+        {
+            transform.position = Vector3.Lerp(transform.position, realPos, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Lerp(transform.rotation, realRot, Time.deltaTime * 5f);
+        }        
+    }
+
     public void Destroy()
     {
         if (NetworkManager.IsServer)
@@ -34,20 +48,5 @@ public partial class NetworkEntity : MonoBehaviour
 
         if (gameObject!=null)
             Destroy(gameObject);
-    }
-
-    public NetworkMessage GetUpdateMessage()
-    {
-        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-        msg.Write(networkable.ID);
-        msg.Write(transform.position);
-        msg.Write(transform.rotation);
-        return msg;
-    }
-
-    public void OnReceiveEntityUpdate(Vector3 pos, Quaternion rot)
-    {
-        transform.position = pos;
-        transform.rotation = rot;
-    }
+    }   
 }
