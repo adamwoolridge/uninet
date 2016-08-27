@@ -24,8 +24,10 @@ public class NetworkManager : MonoBehaviour
 
     public static NetworkManager Instance;
 
-    private bool connected = false;
-    
+    public static bool connected = false;
+
+    int receives = 0;
+
     // Use this for initialization
     void Awake()
     {
@@ -104,11 +106,15 @@ public class NetworkManager : MonoBehaviour
             case NetworkEventType.DataEvent:
                 NetworkMessage message = new NetworkMessage(recBuffer);                
                 if (IsServer)                
-                    ServerConnection.ReceivedMessage(message);                
-                if (IsClient)                
-                    ClientConnection.ReceivedMessage(message);                                                                                                
+                    ServerConnection.ReceivedMessage(message);
+                if (IsClient)
+                {
+                    ClientConnection.ReceivedMessage(message);
+                    receives++;
+                }
                 break;
             case NetworkEventType.DisconnectEvent:
+                Debug.Log(error);
                 ClientDisconnected(recConnectionId);
                 break;
         }
@@ -116,14 +122,44 @@ public class NetworkManager : MonoBehaviour
 
     void SendEntities()
     {
+        if (EntityManager.entities.Count == 0) return;
+        
+        int remaining = EntityManager.entities.Count;
+              
+        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+        msg.Write((uint)Mathf.Min(20,remaining));
+
+        int batchItemCount = 0;
+
         foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
         {
-            SendToClients(ent.Value.GetUpdateMessage());
+            msg.Write(ent.Value.networkable.ID);
+            msg.Write(ent.Value.transform.position);
+            msg.Write(ent.Value.transform.rotation);
+
+            remaining--;
+            batchItemCount++;
+            if (batchItemCount == 20 || remaining==0)
+            {
+                Debug.Log(batchItemCount);
+                batchItemCount = 0;
+                SendToClients(msg);
+                if (remaining > 0)
+                {
+                    msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+                    msg.Write((uint)Mathf.Min(20, remaining));
+                }
+            }
         }
+
+        
+           
     }
 
     void OnGUI()
     {
+        GUI.TextArea(new Rect(500, 10, 100, 100), receives.ToString());
+
         if (GUI.Button(new Rect(10, 10, 100, 100), "Host"))
             Host();
 
@@ -163,11 +199,11 @@ public class NetworkManager : MonoBehaviour
     public void Send(int targetId, NetworkMessage message)
     {
         if (!connected) return;
-
         byte error;
-              
-        Debug.Log(NetworkTransport.Send(socketID, targetId, channelID, message.GetData(), message.GetData().Length, out error));
-        Debug.Log(error);
+        NetworkTransport.Send(socketID, targetId, channelID, message.GetData(), message.GetData().Length, out error);        
+
+        if (error != 0)
+            Debug.Log(error);
     }
 
     private void DebugLog(string text)

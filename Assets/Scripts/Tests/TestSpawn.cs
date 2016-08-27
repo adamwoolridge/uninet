@@ -3,11 +3,23 @@ using System.Collections;
 
 public class TestSpawn : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {        
-        NetworkEntity netEnt = GetComponent<NetworkEntity>();
+    bool spawned = false;
 
-        // Server side would call this        
-        EntityManager.Register(netEnt);
-	}		
+    void Start()
+    {
+        spawned = false;
+    }
+
+    void Update()
+    {
+        if (!spawned && NetworkManager.IsServer && NetworkManager.connected)
+        {
+            NetworkEntity netEnt = GetComponent<NetworkEntity>();
+
+            // Server side would call this        
+            EntityManager.Register(netEnt);
+
+            spawned = true;
+        }
+    }		
 }
