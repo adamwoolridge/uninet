@@ -24,6 +24,11 @@ public static class EntityManager
         entities.Add(netEnt.networkable.ID, netEnt);
     }
 
+    public static void Unregister(NetworkEntity netEnt)
+    {
+        entities.Remove(netEnt.networkable.ID);
+    }
+
 
     public static NetworkEntity Find(uint id)
     {

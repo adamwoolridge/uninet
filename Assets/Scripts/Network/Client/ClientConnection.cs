@@ -10,15 +10,26 @@ public static class ClientConnection
             case NetworkMessageType.Entity_UpdateTransform:
                 {
                     uint count = message.ReadUInt();
-
                     for (int i=0; i< count; i++)
                     {
                         OnEntityUpdate(message);
-                    }
-                    
+                    }                    
                     return;
                 }
+            case NetworkMessageType.Entity_Destroy:
+                {
+                    OnEntityDestroyed(message);                    
+                    return;                  
+                }
+                
         }
+    }
+
+    private static void OnEntityDestroyed(NetworkMessage message)
+    {
+        uint id = message.ReadUInt();
+        NetworkEntity ent = EntityManager.Find(id);
+        ent.Destroy();
     }
 
     private static void OnEntityUpdate(NetworkMessage message)

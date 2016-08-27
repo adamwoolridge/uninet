@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.Networking;
 
-public class NetworkEntity : MonoBehaviour
+public partial class NetworkEntity : MonoBehaviour
 {
     public int TicksPerSecond = 10;
 
@@ -19,6 +19,21 @@ public class NetworkEntity : MonoBehaviour
             float tick = (float)   TicksPerSecond / 1.0f;
             InvokeRepeating("SendUpdate", 0f, tick);
         }
+    }    
+ 
+    public void Destroy()
+    {
+        if (NetworkManager.IsServer)
+        {
+            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_Destroy);
+            msg.Write(networkable.ID);
+            NetworkManager.Instance.SendToClients(msg);
+        }
+
+        EntityManager.Unregister(this);
+
+        if (gameObject!=null)
+            Destroy(gameObject);
     }
 
     public NetworkMessage GetUpdateMessage()

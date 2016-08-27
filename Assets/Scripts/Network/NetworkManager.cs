@@ -140,8 +140,7 @@ public class NetworkManager : MonoBehaviour
             remaining--;
             batchItemCount++;
             if (batchItemCount == 20 || remaining==0)
-            {
-                Debug.Log(batchItemCount);
+            {                
                 batchItemCount = 0;
                 SendToClients(msg);
                 if (remaining > 0)
@@ -150,10 +149,7 @@ public class NetworkManager : MonoBehaviour
                     msg.Write((uint)Mathf.Min(20, remaining));
                 }
             }
-        }
-
-        
-           
+        }                   
     }
 
     void OnGUI()
