@@ -19,9 +19,17 @@ public static class ClientConnection
 
     private static void OnEntityUpdate(NetworkMessage message)
     {
-        // Create the entity locally if it doesn't exist our end
+        uint id = message.ReadUInt();
+        NetworkEntity ent = EntityManager.Find(id);
 
-        // Or just update it if it does
+        if (ent==null)
+        {
+            GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            ent = box.AddComponent<NetworkEntity>();            
+            EntityManager.Register(ent, id);
+        }
+        ent.transform.position = message.ReadVector3();        
+        ent.transform.rotation = message.ReadQuaternion();
     }
 }
 

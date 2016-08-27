@@ -43,6 +43,8 @@ public class NetworkManager : MonoBehaviour
         IsServer = true;
         IsClient = false;
         Debug.Log("Server up!");
+
+        InvokeRepeating("SendEntities", 0.1f, 0.1f);
     }
 
     public void Connect()
@@ -112,6 +114,14 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
+    void SendEntities()
+    {
+        foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
+        {
+            SendToClients(ent.Value.GetUpdateMessage());
+        }
+    }
+
     void OnGUI()
     {
         if (GUI.Button(new Rect(10, 10, 100, 100), "Host"))
@@ -133,16 +143,21 @@ public class NetworkManager : MonoBehaviour
     }
 
 
+    public void SendToClients(NetworkMessage netMsg)
+    {
+        foreach (KeyValuePair<int, NetworkClientID> client in clients)
+        {
+            Send(client.Key, netMsg);
+        }
+    }
+
     public void SendClients()
     {
         NetworkMessage message = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
         message.Write(new Vector3(1f, 2f, 3f));
         message.Write(new Quaternion(4f, 5f, 6f, 7f));
 
-        foreach (KeyValuePair<int, NetworkClientID> client in clients)
-        {
-            Send(client.Key, message);            
-        }        
+        SendToClients(message);
     }
     
     public void Send(int targetId, NetworkMessage message)

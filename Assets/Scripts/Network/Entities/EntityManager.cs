@@ -2,17 +2,36 @@
 using System.Collections;
 using System.Collections.Generic;
 
-// Server only
 public static class EntityManager
 {
-    static Dictionary<uint, NetworkEntity> entities = new Dictionary<uint, NetworkEntity>();
+    public static Dictionary<uint, NetworkEntity> entities = new Dictionary<uint, NetworkEntity>();
     static uint nextID = 0;
 
-    public static NetworkEntity GetNew()
+    public static void Register(NetworkEntity netEnt)
     {
-        NetworkEntity newEntity = new NetworkEntity(nextID);        
-        entities.Add(nextID, newEntity);
-        nextID++;
-        return newEntity;
+        if (NetworkManager.IsServer)
+        {
+            netEnt.networkable = new Networkable(nextID);            
+            nextID++;
+        }
+
+        entities.Add(netEnt.networkable.ID, netEnt);        
+    }
+
+    public static void Register(NetworkEntity netEnt, uint id)
+    {    
+        netEnt.networkable = new Networkable(id);       
+        entities.Add(netEnt.networkable.ID, netEnt);
+    }
+
+
+    public static NetworkEntity Find(uint id)
+    {
+        NetworkEntity ent;
+
+        if (entities.TryGetValue(id, out ent))        
+            return ent;        
+        else        
+            return null;        
     }
 }

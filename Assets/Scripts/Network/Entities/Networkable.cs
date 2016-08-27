@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NetworkEntity 
+public class Networkable
 {
     public uint ID;
-    public Vector3 Position;
-    public Quaternion Rotation;
     
-    public NetworkEntity(uint id)
+    public Networkable(uint id)
     {
         ID = id;
     }
@@ -15,5 +13,5 @@ public class NetworkEntity
     public virtual void Send()
     {
 
-    }                    
+    }   
 }

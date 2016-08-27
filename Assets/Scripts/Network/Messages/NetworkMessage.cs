@@ -32,6 +32,11 @@ public class NetworkMessage
     }
 
     // Write functions
+    public void Write(uint i)
+    {
+        writer.Write(i);
+    }
+
     public void Write(Vector3 v)
     {
         writer.Write(v.x); writer.Write(v.y); writer.Write(v.z);
@@ -48,6 +53,11 @@ public class NetworkMessage
     }
 
     // Read functions
+    public uint ReadUInt()
+    {
+        return reader.ReadUInt32();
+    }
+
     public Vector3 ReadVector3()
     {        
         return new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
