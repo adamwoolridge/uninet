@@ -59,9 +59,7 @@ public class NetworkManager : MonoBehaviour
         IsServer = false;
         IsClient = true;
         byte error;
-        clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);        
-
-        Debug.Log("Connected to server!");
+        clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);                
     }
 
     private void ClientConnected(int id)
@@ -69,9 +67,13 @@ public class NetworkManager : MonoBehaviour
         if (IsServer)
         {
             clients.Add(id, new NetworkClientID(id));
+            Debug.Log("Client connected with ID: " + id);
         }        
         
-        Debug.Log("Client connected with ID: " + id);
+        if (IsClient)
+        {
+            DebugLog("Connected to server.");
+        }        
     }
 
     private void ClientDisconnected(int id)
@@ -79,9 +81,8 @@ public class NetworkManager : MonoBehaviour
         if (IsServer)
         {
             clients.Remove(id);
-        }
-
-        Debug.Log("Client disconnected, removing ID: " + id);
+            Debug.Log("Client disconnected, removing ID: " + id);
+        }        
     }
 
     // Update is called once per frame
