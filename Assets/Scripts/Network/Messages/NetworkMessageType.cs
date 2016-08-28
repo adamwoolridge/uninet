@@ -5,4 +5,6 @@ public enum NetworkMessageType : byte
 {
     Entity_UpdateTransform,
     Entity_Destroy,
+
+    Entity_ClientCreated,
 }

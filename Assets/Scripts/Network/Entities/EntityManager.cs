@@ -7,7 +7,7 @@ public static class EntityManager
     public static Dictionary<uint, NetworkEntity> entities = new Dictionary<uint, NetworkEntity>();
     static uint nextID = 0;
 
-    public static void Register(NetworkEntity netEnt)
+    public static uint Register(NetworkEntity netEnt)
     {
         if (NetworkManager.IsServer)
         {
@@ -15,13 +15,17 @@ public static class EntityManager
             nextID++;
         }
 
-        entities.Add(netEnt.networkable.ID, netEnt);        
+        entities.Add(netEnt.networkable.ID, netEnt);
+
+        return netEnt.networkable.ID;        
     }
 
-    public static void Register(NetworkEntity netEnt, uint id)
+    public static uint Register(NetworkEntity netEnt, uint id)
     {    
         netEnt.networkable = new Networkable(id);       
         entities.Add(netEnt.networkable.ID, netEnt);
+
+        return netEnt.networkable.ID;
     }
 
     public static void Unregister(NetworkEntity netEnt)

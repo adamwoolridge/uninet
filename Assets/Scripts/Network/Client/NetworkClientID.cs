@@ -3,11 +3,13 @@ using System.Collections;
 
 public class NetworkClientID
 {
-    public int ID;
+    public int ConnectionID;
+    public uint NetID;
 
-    public NetworkClientID(int id)
+    public NetworkClientID(int conID, uint netID)
     {
-        ID = id;
+        ConnectionID = conID;
+        NetID = netID;
     }
 
 }

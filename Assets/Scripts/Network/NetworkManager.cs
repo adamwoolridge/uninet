@@ -66,8 +66,8 @@ public class NetworkManager : MonoBehaviour
     {
         if (IsServer)
         {
-            clients.Add(id, new NetworkClientID(id));
-            Debug.Log("Client connected with ID: " + id);
+            NetworkClientID clientID = ServerConnection.PlayerConnected(id);
+            clients.Add(clientID.ConnectionID, clientID);            
         }        
         
         if (IsClient)

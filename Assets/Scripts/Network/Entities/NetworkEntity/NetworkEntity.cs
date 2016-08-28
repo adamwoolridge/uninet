@@ -26,9 +26,23 @@ public partial class NetworkEntity : MonoBehaviour
         }
     }    
  
+    private void SendUpdate()
+    {
+        if (transform.hasChanged)
+        {
+            NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+            
+            transform.hasChanged = false;
+        }
+    }
+
     public void Update()
     {
-        if (!locallyControlled)
+        if (locallyControlled)
+        {
+
+        }
+        else
         {
             transform.position = Vector3.Lerp(transform.position, realPos, Time.deltaTime * 5f);
             transform.rotation = Quaternion.Lerp(transform.rotation, realRot, Time.deltaTime * 5f);

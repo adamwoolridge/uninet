@@ -11,7 +11,7 @@ public class TestSpawn : MonoBehaviour {
     }
 
     void Update()
-    {
+    {        
         if (!spawned && NetworkManager.IsServer && NetworkManager.connected)
         {
             NetworkEntity netEnt = GetComponent<NetworkEntity>();

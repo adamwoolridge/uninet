@@ -7,6 +7,12 @@ public static class ClientConnection
     {        
         switch (message.MessageType)
         {
+            case NetworkMessageType.Entity_ClientCreated:
+                {
+                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt());
+                    clientEnt.locallyControlled = true;
+                    return;
+                }
             case NetworkMessageType.Entity_UpdateTransform:
                 {
                     uint count = message.ReadUInt();
@@ -38,12 +44,18 @@ public static class ClientConnection
 
         if (ent==null)
         {
-            GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            ent = box.AddComponent<NetworkEntity>();            
-            EntityManager.Register(ent, id);
+            CreateEntity(id);
         }
 
         ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
+    }
+
+    private static NetworkEntity CreateEntity(uint netID)
+    {
+        GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        NetworkEntity ent = box.AddComponent<NetworkEntity>();
+        EntityManager.Register(ent, netID);
+        return ent;
     }
 }
 
