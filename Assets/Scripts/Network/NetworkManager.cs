@@ -79,9 +79,14 @@ public class NetworkManager : MonoBehaviour
     private void ClientDisconnected(int id)
     {
         if (IsServer)
-        {
-            clients.Remove(id);
+        {            
             Debug.Log("Client disconnected, removing ID: " + id);
+
+            NetworkEntity ent = EntityManager.Find(clients[id].NetID);
+            if (ent!=null)
+                ent.Destroy();
+
+            clients.Remove(id);                        
         }        
     }
 
