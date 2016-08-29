@@ -9,8 +9,7 @@ public static class ClientConnection
         {
             case NetworkMessageType.Entity_ClientCreated:
                 {
-                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt());
-                    clientEnt.locallyControlled = true;
+                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), true);                    
                     return;
                 }
             case NetworkMessageType.Entity_UpdateTransform:
@@ -45,7 +44,7 @@ public static class ClientConnection
 
         if (ent==null)
         {
-            CreateEntity(id);
+            ent = CreateEntity(id, false);
         }
 
         if (ent.locallyControlled) return;
@@ -53,10 +52,11 @@ public static class ClientConnection
         ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
     }
 
-    private static NetworkEntity CreateEntity(uint netID)
+    private static NetworkEntity CreateEntity(uint netID, bool local)
     {
         GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
         NetworkEntity ent = box.AddComponent<NetworkEntity>();
+        ent.locallyControlled = local;
         EntityManager.Register(ent, netID);
         ent.Init();
         return ent;

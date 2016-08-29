@@ -15,7 +15,7 @@ public partial class NetworkEntity : MonoBehaviour
 
     public void Init()
     {        
-        if (NetworkManager.IsClient)
+        if (NetworkManager.IsClient && locallyControlled)
         {
             float tick = 1.0f / (float)TicksPerSecond;
             InvokeRepeating("SendUpdate", 0f, tick);
