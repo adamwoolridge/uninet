@@ -176,6 +176,11 @@ public class NetworkManager : MonoBehaviour
     }
 
 
+    public void SendToServer(NetworkMessage netMsg)
+    {
+        Send(clientConnectionID, netMsg);
+    }
+
     public void SendToClients(NetworkMessage netMsg)
     {
         foreach (KeyValuePair<int, NetworkClientID> client in clients)

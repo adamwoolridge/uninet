@@ -40,12 +40,15 @@ public static class ClientConnection
     private static void OnEntityUpdate(NetworkMessage message)
     {
         uint id = message.ReadUInt();
+        
         NetworkEntity ent = EntityManager.Find(id);
 
         if (ent==null)
         {
             CreateEntity(id);
         }
+
+        if (ent.locallyControlled) return;
 
         ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
     }
@@ -55,6 +58,7 @@ public static class ClientConnection
         GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
         NetworkEntity ent = box.AddComponent<NetworkEntity>();
         EntityManager.Register(ent, netID);
+        ent.Init();
         return ent;
     }
 }

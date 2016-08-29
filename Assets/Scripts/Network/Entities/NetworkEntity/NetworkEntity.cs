@@ -13,15 +13,11 @@ public partial class NetworkEntity : MonoBehaviour
     Vector3 realPos;
     Quaternion realRot;
 
-    public void Init(Networkable net)
-    {
-        networkable = net;
-
-        Debug.Log("New entity, id: " + net.ID);
-
+    public void Init()
+    {        
         if (NetworkManager.IsClient)
         {
-            float tick = (float)   TicksPerSecond / 1.0f;
+            float tick = 1.0f / (float)TicksPerSecond;
             InvokeRepeating("SendUpdate", 0f, tick);
         }
     }    
@@ -30,8 +26,13 @@ public partial class NetworkEntity : MonoBehaviour
     {
         if (transform.hasChanged)
         {
+            Debug.Log("Sending position update to server.");
             NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-            
+            updateMsg.Write(networkable.ID);
+            updateMsg.Write(transform.position);
+            updateMsg.Write(transform.rotation);
+
+            NetworkManager.Instance.SendToServer(updateMsg);
             transform.hasChanged = false;
         }
     }
