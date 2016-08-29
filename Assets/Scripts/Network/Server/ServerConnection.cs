@@ -9,6 +9,8 @@ public static class ServerConnection
         {
             case NetworkMessageType.Entity_UpdateTransform:
                 {
+
+
                     OnEntityUpdate(message);
                     return;
                 }
@@ -47,7 +49,14 @@ public static class ServerConnection
             return;
         }
        
-        ent.OnReceiveEntityUpdate(pos, rot);        
+        ent.OnReceiveEntityUpdate(pos, rot);
+
+        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+        msg.Write(1);
+        msg.Write(id);
+        msg.Write(pos);
+        msg.Write(rot);
+        NetworkManager.Instance.SendToClients(msg);
     }
 }
 

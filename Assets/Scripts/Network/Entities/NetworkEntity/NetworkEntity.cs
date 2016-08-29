@@ -15,7 +15,7 @@ public partial class NetworkEntity : MonoBehaviour
 
     public void Init()
     {        
-        if (NetworkManager.IsClient && locallyControlled)
+        if (NetworkManager.IsClient && locallyControlled || NetworkManager.IsServer)
         {
             float tick = 1.0f / (float)TicksPerSecond;
             InvokeRepeating("SendUpdate", 0f, tick);
@@ -26,13 +26,21 @@ public partial class NetworkEntity : MonoBehaviour
     {
         if (transform.hasChanged)
         {
-            Debug.Log("Sending position update to server.");
-            NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-            updateMsg.Write(networkable.ID);
-            updateMsg.Write(transform.position);
-            updateMsg.Write(transform.rotation);
+            if (NetworkManager.IsClient)
+            {
 
-            NetworkManager.Instance.SendToServer(updateMsg);
+                Debug.Log("Sending position update to server.");
+                NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+                updateMsg.Write(networkable.ID);
+                updateMsg.Write(transform.position);
+                updateMsg.Write(transform.rotation);
+
+                NetworkManager.Instance.SendToServer(updateMsg);
+            }
+            if (NetworkManager.IsServer)
+            {
+
+            }
             transform.hasChanged = false;
         }
     }

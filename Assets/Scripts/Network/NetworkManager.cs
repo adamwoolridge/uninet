@@ -46,7 +46,7 @@ public class NetworkManager : MonoBehaviour
         IsClient = false;
         Debug.Log("Server up!");
 
-        InvokeRepeating("SendEntities", 0.1f, 0.1f);
+        //InvokeRepeating("SendEntities", 0.1f, 0.1f);
     }
 
     public void Connect()
