@@ -39,17 +39,18 @@ public static class ClientConnection
     private static void OnEntityUpdate(NetworkMessage message)
     {
         uint id = message.ReadUInt();
+        Vector3 pos = message.ReadVector3();
+        Quaternion rot = message.ReadQuaternion();
         
         NetworkEntity ent = EntityManager.Find(id);
 
-        if (ent==null)
-        {
-            ent = CreateEntity(id, false);
-        }
-
-        if (ent.locallyControlled) return;
-
-        ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
+        if (ent==null)        
+            ent = CreateEntity(id, false);        
+        
+        if (ent.locallyControlled)                
+            return;
+        
+        ent.OnReceiveEntityUpdate(pos, rot);        
     }
 
     private static NetworkEntity CreateEntity(uint netID, bool local)

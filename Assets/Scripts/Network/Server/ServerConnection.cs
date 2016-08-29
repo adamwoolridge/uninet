@@ -36,7 +36,9 @@ public static class ServerConnection
 	private static void OnEntityUpdate(NetworkMessage message)
     {
         uint id = message.ReadUInt();
-        
+        Vector3 pos = message.ReadVector3();
+        Quaternion rot = message.ReadQuaternion();
+
         NetworkEntity ent = EntityManager.Find(id);
 
         if (ent==null)
@@ -45,7 +47,7 @@ public static class ServerConnection
             return;
         }
        
-        ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
+        ent.OnReceiveEntityUpdate(pos, rot);        
     }
 }
 
