@@ -5,7 +5,14 @@ public static class ServerConnection
 {
     public static void ReceivedMessage(NetworkMessage message)
     {
-        Debug.Log("Server received message of type: " + message.MessageType);
+		switch (message.MessageType)
+        {
+            case NetworkMessageType.Entity_UpdateTransform:
+                {
+                    OnEntityUpdate(message);
+                    return;
+                }
+        }
     }
 
     public static NetworkClientID PlayerConnected(int connectionID)
@@ -24,6 +31,21 @@ public static class ServerConnection
         NetworkManager.Instance.Send(netClientID.ConnectionID, msg);
 
         return netClientID;
+    }
+
+	private static void OnEntityUpdate(NetworkMessage message)
+    {
+        uint id = message.ReadUInt();
+        
+        NetworkEntity ent = EntityManager.Find(id);
+
+        if (ent==null)
+        {
+        	Debug.LogWarning("Server received OnEntityUpdate for an invalid entity, ID: " + id);
+            return;
+        }
+       
+        ent.OnReceiveEntityUpdate(message.ReadVector3(), message.ReadQuaternion());        
     }
 }
 

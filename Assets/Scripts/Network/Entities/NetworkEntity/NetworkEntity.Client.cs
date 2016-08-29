@@ -8,5 +8,11 @@ public partial class NetworkEntity : MonoBehaviour
     {
         realPos = pos;
         realRot = rot;
+
+        if (NetworkManager.IsServer)
+        {
+        	transform.position = realPos;
+        	transform.rotation = realRot;
+        }
     }
 }
