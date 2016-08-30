@@ -20,10 +20,9 @@ GameObject:
   m_Component:
   - 4: {fileID: 4000012309064902}
   - 33: {fileID: 33000011317800800}
-  - 136: {fileID: 136000013806413308}
   - 23: {fileID: 23000011165799782}
-  - 114: {fileID: 114000011745752030}
   - 114: {fileID: 114000010858798138}
+  - 64: {fileID: 64000011400726552}
   m_Layer: 0
   m_Name: Island
   m_TagString: Untagged
@@ -80,6 +79,18 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000010884581414}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!64 &64000011400726552
+MeshCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010884581414}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &114000010858798138
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -94,27 +105,3 @@ MonoBehaviour:
   Path: Island
   TicksPerSecond: 10
   locallyControlled: 0
---- !u!114 &114000011745752030
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010884581414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 484e4e9c5a43e8141a30948f8f8d249c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!136 &136000013806413308
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000010884581414}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}

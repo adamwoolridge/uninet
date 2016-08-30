@@ -7,7 +7,7 @@ public static class ClientConnection
     {        
         switch (message.MessageType)
         {
-            case NetworkMessageType.Entity_ClientCreated:
+            case NetworkMessageType.Entity_LocalPlayerCreated:
                 {
                     NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), message.ReadString(), true);                    
                     return;

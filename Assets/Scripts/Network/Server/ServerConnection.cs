@@ -33,7 +33,7 @@ public static class ServerConnection
 
         obj.transform.position = Vector3.zero;
 
-        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_ClientCreated);
+        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);
         msg.Write(netClientID.NetID);
         msg.Write(ent.Path);
         NetworkManager.Instance.Send(netClientID.ConnectionID, msg);
