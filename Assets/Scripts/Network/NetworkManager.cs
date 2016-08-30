@@ -59,7 +59,8 @@ public class NetworkManager : MonoBehaviour
         IsServer = false;
         IsClient = true;
         byte error;
-        clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);                
+        //clientConnectionID = NetworkTransport.Connect(socketID, "86.179.63.182", socketPort, 0, out error);                
+        clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);
     }
 
     private void ClientConnected(int id)
@@ -140,6 +141,7 @@ public class NetworkManager : MonoBehaviour
         foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
         {
             msg.Write(ent.Value.networkable.ID);
+            msg.Write(ent.Value.Path);
             msg.Write(ent.Value.transform.position);
             msg.Write(ent.Value.transform.rotation);
 
@@ -166,18 +168,7 @@ public class NetworkManager : MonoBehaviour
             Host();
 
         if (GUI.Button(new Rect(10, 200, 100, 100), "Client"))
-            Connect();
-
-        if (GUI.Button(new Rect(10, 400, 100, 100), "Send to Server"))
-        {
-            NetworkMessage message = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-            message.Write(new Vector3(1f, 2f, 3f));
-            message.Write(new Quaternion(4f, 5f, 6f, 7f));
-            Send(clientConnectionID, message);
-        }
-
-        if (GUI.Button(new Rect(10, 600, 100, 100), "Send to clients"))
-            SendClients();
+            Connect();      
     }
 
 
@@ -193,16 +184,7 @@ public class NetworkManager : MonoBehaviour
             Send(client.Key, netMsg);
         }
     }
-
-    public void SendClients()
-    {
-        NetworkMessage message = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-        message.Write(new Vector3(1f, 2f, 3f));
-        message.Write(new Quaternion(4f, 5f, 6f, 7f));
-
-        SendToClients(message);
-    }
-    
+       
     public void Send(int targetId, NetworkMessage message)
     {
         if (!connected) return;

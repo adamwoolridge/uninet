@@ -67,4 +67,9 @@ public class NetworkMessage
     {
         return new Quaternion(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
     }
+
+    public string ReadString()
+    {
+        return reader.ReadString();
+    }
 }

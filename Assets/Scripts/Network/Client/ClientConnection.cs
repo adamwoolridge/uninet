@@ -9,7 +9,7 @@ public static class ClientConnection
         {
             case NetworkMessageType.Entity_ClientCreated:
                 {
-                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), true);                    
+                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), message.ReadString(), true);                    
                     return;
                 }
             case NetworkMessageType.Entity_UpdateTransform:
@@ -25,7 +25,12 @@ public static class ClientConnection
                 {
                     OnEntityDestroyed(message);                    
                     return;                  
-                }                
+                }
+            case NetworkMessageType.Chat:
+                {
+                    OnChat(message);
+                    return;
+                }             
         }
     }
 
@@ -39,13 +44,14 @@ public static class ClientConnection
     private static void OnEntityUpdate(NetworkMessage message)
     {
         uint id = message.ReadUInt();
+        string path = message.ReadString();
         Vector3 pos = message.ReadVector3();
         Quaternion rot = message.ReadQuaternion();
         
         NetworkEntity ent = EntityManager.Find(id);
 
         if (ent==null)        
-            ent = CreateEntity(id, false);        
+            ent = CreateEntity(id, path, false);        
         
         if (ent.locallyControlled)                
             return;
@@ -53,14 +59,23 @@ public static class ClientConnection
         ent.OnReceiveEntityUpdate(pos, rot);        
     }
 
-    private static NetworkEntity CreateEntity(uint netID, bool local)
-    {
-        GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        NetworkEntity ent = box.AddComponent<NetworkEntity>();
+    //private static NetworkEntity CreateEntity(uint netID, bool local)
+    private static NetworkEntity CreateEntity(uint netID, string path, bool local)
+    {        
+        GameObject obj = GameObject.Instantiate(Resources.Load("Cube")) as GameObject;
+        NetworkEntity ent = obj.GetComponent<NetworkEntity>();
         ent.locallyControlled = local;
         EntityManager.Register(ent, netID);
         ent.Init();
         return ent;
+    }
+
+    private static void OnChat(NetworkMessage message)
+    {
+        uint userID = message.ReadUInt();
+        string chatText = message.ReadString();
+
+        Debug.Log(chatText);
     }
 }
 

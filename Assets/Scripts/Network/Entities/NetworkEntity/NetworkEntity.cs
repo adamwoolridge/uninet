@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 
 public partial class NetworkEntity : MonoBehaviour
 {
+    public string Path = "";
     public int TicksPerSecond = 10;
     
     public Networkable networkable;
@@ -27,14 +28,12 @@ public partial class NetworkEntity : MonoBehaviour
         if (transform.hasChanged)
         {
             if (NetworkManager.IsClient)
-            {
-
-                Debug.Log("Sending position update to server.");
+            {             
                 NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
                 updateMsg.Write(networkable.ID);
+                updateMsg.Write(Path);
                 updateMsg.Write(transform.position);
                 updateMsg.Write(transform.rotation);
-
                 NetworkManager.Instance.SendToServer(updateMsg);
             }
             if (NetworkManager.IsServer)
