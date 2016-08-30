@@ -48,7 +48,7 @@ public partial class NetworkEntity : MonoBehaviour
     {
         if (NetworkManager.IsClient && locallyControlled)
         {
-            transform.position += new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical") * 1f * Time.deltaTime);
+            transform.position += new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")) * 2f * Time.deltaTime;
         }
         else
         {
