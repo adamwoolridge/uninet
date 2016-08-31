@@ -4,7 +4,9 @@ using System.Collections;
 public static class ClientConnection
 {    
     public static void ReceivedMessage(NetworkMessage message)
-    {        
+    {
+        Debug.Log(message.MessageType);
+
         switch (message.MessageType)
         {
             case NetworkMessageType.Entity_LocalPlayerCreated:

@@ -21,7 +21,7 @@ public static class ServerConnection
         }
     }
 
-    public static NetworkClientID PlayerConnected(int connectionID)
+    public static NetworkClientID PlayerConnected(ulong connectionID)
     {
         Debug.Log("Client connected with ID: " + connectionID);
 
