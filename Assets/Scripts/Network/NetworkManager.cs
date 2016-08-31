@@ -11,12 +11,7 @@ using Networking.Raknet;
 
 unsafe public class NetworkManager : MonoBehaviour
 {
-   // public static Server sv = new Facepunch.Network.Raknet.Server();
-  //  public Client cl = new Facepunch.Network.Raknet.Client();
-
-    int channelID;
-    int socketID;
-    int socketPort = 8888;
+     
     ulong clientConnectionID;
 
     private Dictionary<ulong, NetworkClientID> clients = new Dictionary<ulong, NetworkClientID>();
@@ -51,29 +46,10 @@ unsafe public class NetworkManager : MonoBehaviour
 
     // Use this for initialization
     void Awake()
-    {
-     
-
-        Instance = this;
-        //NetworkTransport.Init();                
-
-        //sv.ip = "127.0.0.1";
-        //sv.port = 8888;
-        //sv.Start();
-
-
+    {     
+        Instance = this;     
     }
-
-    //void OnNetworkMessage(Message packet)
-    //{
-    //    Debug.Log("network message!");
-    //}
-
-    //void OnDisconnected(string strReason, Network.Connection connection)
-    //{
-    //    Debug.Log("Client disconnected");
-    //}
-
+    
     public void Host()
     {
         ptr = Native.NET_Create();
@@ -93,19 +69,6 @@ unsafe public class NetworkManager : MonoBehaviour
             Debug.Log("Cannot start server");
             ShutDown();
         }
-
-        //ConnectionConfig config = new ConnectionConfig();
-        //channelID = config.AddChannel(QosType.Reliable);
-        //config.MaxSentMessageQueueSize = 1000;
-
-        //HostTopology topology = new HostTopology(config, 128);
-        //socketID = NetworkTransport.AddHost(topology, socketPort);
-        //connected = true;
-        //IsServer = true;
-        //IsClient = false;
-        //Debug.Log("Server up!");
-
-        //InvokeRepeating("SendEntities", 0.1f, 0.1f);
     }
  
     public void Connect()
@@ -116,13 +79,7 @@ unsafe public class NetworkManager : MonoBehaviour
         {
             IsServer = false;
             IsClient = true;
-            connected = true;
-            // connectionState = ClientConnectState.Connecting;
-            // connection = new NetworkConnection();
-            //connection.ipaddress = ip;
-
-            //Create new Raknet Connection
-            // Debug.Log(ptr + " Client connecting to " + ip + " " + port);
+            connected = true;         
             Debug.Log("Connected?");
             return;
         }
@@ -133,18 +90,7 @@ unsafe public class NetworkManager : MonoBehaviour
             connected = false;
             Debug.Log("Failed to connect");
             ShutDown();
-        }
-        //ConnectionConfig config = new ConnectionConfig();
-        //channelID = config.AddChannel(QosType.Reliable);
-        //config.MaxSentMessageQueueSize = 1000;
-        //HostTopology topology = new HostTopology(config, 1);
-        //socketID = NetworkTransport.AddHost(topology);
-        //connected = true;
-        //IsServer = false;
-        //IsClient = true;
-        //byte error;
-        ////clientConnectionID = NetworkTransport.Connect(socketID, "86.179.63.182", socketPort, 0, out error);                
-        //clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);
+        }     
     }
 
     private void ClientConnected(ulong id)
@@ -153,12 +99,7 @@ unsafe public class NetworkManager : MonoBehaviour
         {
             NetworkClientID clientID = ServerConnection.PlayerConnected(id);
             clients.Add(clientID.ConnectionID, clientID);            
-        }        
-        
-        if (IsClient)
-        {
-            DebugLog("Connected to server.");
-        }        
+        }             
     }
 
     private void ClientDisconnected(ulong id)
@@ -195,7 +136,6 @@ unsafe public class NetworkManager : MonoBehaviour
                     clientConnectionID = guid;                    
                     return true;
                 }
-
         }
 
         return false;
@@ -233,40 +173,7 @@ unsafe public class NetworkManager : MonoBehaviour
                     }
                 }
             }
-        }
-        //int recHostId;
-        //int recConnectionId;
-        //int recChannelId;
-        //byte[] recBuffer = new byte[1024];
-        //int bufferSize = 1024;
-        //int dataSize;
-        //byte error;
-        //NetworkEventType recNetworkEvent = NetworkTransport.Receive(out recHostId, out recConnectionId, out recChannelId, recBuffer, bufferSize, out dataSize, out error);
-
-        //switch (recNetworkEvent)
-        //{
-        //    case NetworkEventType.Nothing:
-        //        break;
-        //    case NetworkEventType.ConnectEvent:
-        //        ClientConnected(recConnectionId);
-        //        break;
-        //    case NetworkEventType.DataEvent:
-        //        NetworkMessage message = new NetworkMessage(recBuffer);
-        //        if (IsServer)
-        //        {                 
-        //            ServerConnection.ReceivedMessage(message);
-        //        }
-        //        if (IsClient)
-        //        {
-        //            ClientConnection.ReceivedMessage(message);
-        //            receives++;
-        //        }
-        //        break;
-        //    case NetworkEventType.DisconnectEvent:
-        //        Debug.Log(error);
-        //        ClientDisconnected(recConnectionId);
-        //        break;
-       // }
+        }       
     }
 
     byte[] ReadBytes(int length)
@@ -358,8 +265,7 @@ unsafe public class NetworkManager : MonoBehaviour
 
 
     public void SendToServer(NetworkMessage netMsg)
-    {
-        Debug.LogWarning("SendToServer is commented out!");
+    {        
         Send(clientConnectionID, netMsg);
     }
 
