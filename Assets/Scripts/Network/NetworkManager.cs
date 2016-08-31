@@ -145,7 +145,7 @@ unsafe public class NetworkManager : MonoBehaviour
     void Update()
     {
         if (connected)
-        {
+        {         
             while (Native.NET_Receive(ptr))
             {
                 byte type = ReadBytes(1)[0];
