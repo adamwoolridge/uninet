@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Facepunch.GoogleSheets</name>
+    </assembly>
+    <members>
+        <member name="M:Facepunch.GoogleSheets.Import.FromUrl``1(System.String)">
+            <summary>
+            When passed a google sheet ID, this function will read it from the web and fill an object with its values.
+            It will only fill PROPERTIES on the object.
+            It will only read the first sheet.
+            The google sheet needs to be published on the web.
+            </summary>
+        </member>
+    </members>
+</doc>

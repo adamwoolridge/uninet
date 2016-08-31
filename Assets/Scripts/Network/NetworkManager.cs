@@ -5,10 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-
+using Network;
 
 public class NetworkManager : MonoBehaviour
 {
+    public static Server sv = new Facepunch.Network.Raknet.Server();
+    public Client cl = new Facepunch.Network.Raknet.Client();
+
     int channelID;
     int socketID;
     int socketPort = 8888;
@@ -32,35 +35,79 @@ public class NetworkManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        NetworkTransport.Init();        
+     //   NetworkTransport.Init();        
+        
     }
-    
+
+    void OnNetworkMessage(Message packet)
+    {
+        Debug.Log("network message!");
+    }
+
+    void OnDisconnected(string strReason, Network.Connection connection)
+    {
+        Debug.Log("Client disconnected");
+    }
+
     public void Host()
     {
-        ConnectionConfig config = new ConnectionConfig();
-        channelID = config.AddChannel(QosType.Reliable);    
-        HostTopology topology = new HostTopology(config, 128);
-        socketID = NetworkTransport.AddHost(topology, socketPort);
-        connected = true;
-        IsServer = true;
-        IsClient = false;
-        Debug.Log("Server up!");
+        sv.ip = "localhost";
+        sv.port = 8888;         
+        sv.onMessage = OnNetworkMessage;
+        //sv.onUnconnectedMessage = OnUnconnectedMessage;
+        sv.onDisconnected = OnDisconnected;
+
+        if (!sv.Start())
+        {
+            Debug.LogWarning("Couldn't Start Server.");
+            return;
+        }
+
+        //ConnectionConfig config = new ConnectionConfig();
+        //channelID = config.AddChannel(QosType.Reliable);
+        //config.MaxSentMessageQueueSize = 1000;    
+
+        //HostTopology topology = new HostTopology(config, 128);
+        //socketID = NetworkTransport.AddHost(topology, socketPort);
+        //connected = true;
+        //IsServer = true;
+        //IsClient = false;
+        //Debug.Log("Server up!");
 
         //InvokeRepeating("SendEntities", 0.1f, 0.1f);
     }
 
+    void OnClNetworkMessage(Message packet)
+    {
+        Debug.Log("Message!");
+    }
+
     public void Connect()
     {
-        ConnectionConfig config = new ConnectionConfig();
-        channelID = config.AddChannel(QosType.Reliable);
-        HostTopology topology = new HostTopology(config, 1);
-        socketID = NetworkTransport.AddHost(topology);
-        connected = true;
-        IsServer = false;
-        IsClient = true;
-        byte error;
-        //clientConnectionID = NetworkTransport.Connect(socketID, "86.179.63.182", socketPort, 0, out error);                
-        clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);
+
+        if (!cl.Connect("127.0.0.1", 8888))
+        {
+            Debug.Log("Connect failed!");
+            return;
+        }
+        else
+        {
+            Debug.Log("Connected?");
+        }
+
+       cl.onMessage = OnClNetworkMessage;
+
+        //ConnectionConfig config = new ConnectionConfig();
+        //channelID = config.AddChannel(QosType.Reliable);
+        //config.MaxSentMessageQueueSize = 1000;
+        //HostTopology topology = new HostTopology(config, 1);
+        //socketID = NetworkTransport.AddHost(topology);
+        //connected = true;
+        //IsServer = false;
+        //IsClient = true;
+        //byte error;
+        ////clientConnectionID = NetworkTransport.Connect(socketID, "86.179.63.182", socketPort, 0, out error);                
+        //clientConnectionID = NetworkTransport.Connect(socketID, "127.0.0.1", socketPort, 0, out error);
     }
 
     private void ClientConnected(int id)
@@ -93,7 +140,9 @@ public class NetworkManager : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {        
+    {
+        return;
+          
         int recHostId;
         int recConnectionId;
         int recChannelId;
@@ -111,12 +160,15 @@ public class NetworkManager : MonoBehaviour
                 ClientConnected(recConnectionId);
                 break;
             case NetworkEventType.DataEvent:
-                NetworkMessage message = new NetworkMessage(recBuffer);                
-                if (IsServer)                
+
+                if (IsServer)
+                {
+                    NetworkMessage message = new NetworkMessage(recBuffer);
                     ServerConnection.ReceivedMessage(message);
+                }
                 if (IsClient)
                 {
-                    ClientConnection.ReceivedMessage(message);
+                    //ClientConnection.ReceivedMessage(message);
                     receives++;
                 }
                 break;
@@ -133,30 +185,33 @@ public class NetworkManager : MonoBehaviour
         
         int remaining = EntityManager.entities.Count;
               
-        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-        msg.Write((uint)Mathf.Min(20,remaining));
+        //NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+        //msg.Write((uint)Mathf.Min(20,remaining));
 
-        int batchItemCount = 0;
+        //int batchItemCount = 0;
 
         foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
         {
+            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+            msg.Write(1);
             msg.Write(ent.Value.networkable.ID);
             msg.Write(ent.Value.Path);
             msg.Write(ent.Value.transform.position);
             msg.Write(ent.Value.transform.rotation);
+            SendToClients(msg);
 
-            remaining--;
-            batchItemCount++;
-            if (batchItemCount == 20 || remaining==0)
-            {                
-                batchItemCount = 0;
-                SendToClients(msg);
-                if (remaining > 0)
-                {
-                    msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-                    msg.Write((uint)Mathf.Min(20, remaining));
-                }
-            }
+            //remaining--;
+            //batchItemCount++;
+            //if (batchItemCount == 20 || remaining==0)
+            //{                
+            //    batchItemCount = 0;
+               
+            //    if (remaining > 0)
+            //    {
+            //        msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+            //        msg.Write((uint)Mathf.Min(20, remaining));
+            //    }
+            //}
         }                   
     }
 
@@ -168,7 +223,13 @@ public class NetworkManager : MonoBehaviour
             Host();
 
         if (GUI.Button(new Rect(10, 200, 100, 100), "Client"))
-            Connect();      
+            Connect();
+
+        if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
+        {
+            TestMassSpawn.Spawn("Cube", 100);
+            SendEntities();
+        }
     }
 
 
@@ -189,10 +250,12 @@ public class NetworkManager : MonoBehaviour
     {
         if (!connected) return;
         byte error;
-        NetworkTransport.Send(socketID, targetId, channelID, message.GetData(), message.GetData().Length, out error);        
-
-        if (error != 0)
-            Debug.Log(error);
+        NetworkTransport.Send(socketID, targetId, channelID, message.GetData(), message.GetData().Length, out error);
+        
+        if ((NetworkError)error != NetworkError.Ok)
+        {
+            Debug.Log("Message send error: " + (NetworkError)error);
+        }
     }
 
     private void DebugLog(string text)

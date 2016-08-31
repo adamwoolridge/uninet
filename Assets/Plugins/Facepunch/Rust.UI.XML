@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rust.UI</name>
+    </assembly>
+    <members>
+        <member name="P:Rust.UI.Debug.NetGraph.Enabled">
+            <summary>
+            Should we show the net graph panel
+            </summary>
+        </member>
+        <member name="M:Rust.UI.Debug.NetGraph.UpdateFrom(Network.Stats)">
+            <summary>
+            Called to update the stats from this Network.Stats
+            </summary>
+        </member>
+    </members>
+</doc>

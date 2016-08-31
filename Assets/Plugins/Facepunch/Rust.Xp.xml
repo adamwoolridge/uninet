@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Rust.Xp</name>
+    </assembly>
+    <members>
+        <member name="M:Rust.Xp.Config.XpToLevel(System.Single)">
+            <summary>
+            These two functions determine the curve of the level
+            system. They should always reverse each other.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Config.LevelToXp(System.Int32)">
+            <summary>
+            These two functions determine the curve of the level
+            system. They should always reverse each other.
+            </summary>
+        </member>
+        <member name="F:Rust.Xp.Debug.Output">
+            <summary>
+            Hook this up to your console to receive debug messages.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Earn.Base.GetDiminishScale(System.Single)">
+            <summary>
+            Given a value and a delta (0-1) this will return a scalar
+            </summary>
+            <param name="delta">A delta between 0-1, where 1 means we have collected 100% - ie, our Total is on Maximum</param>
+            <returns></returns>
+        </member>
+        <member name="T:Rust.Xp.Earn.Bonus">
+            <summary>
+            Use when you need to give a consistently high amount of XP
+            </summary>
+        </member>
+        <member name="T:Rust.Xp.Earn.Time">
+            <summary>
+            Use when you need to give a consistently high amount of XP
+            </summary>
+        </member>
+        <member name="T:Rust.Xp.Agent">
+            <summary>
+            Holds XP values. Usually associated with a player.
+            </summary>
+        </member>
+        <member name="P:Rust.Xp.Agent.CurrentLevel">
+            <summary>
+            The player's current level, ie, 1, 2, 8.
+            </summary>
+        </member>
+        <member name="P:Rust.Xp.Agent.UnspentXp">
+            <summary>
+            The player's current XP balance. This is TotalXp minus SpentXp
+            </summary>
+        </member>
+        <member name="P:Rust.Xp.Agent.EarnedXp">
+            <summary>
+            XP the player has earned through their own actions. This number should only ever increase.
+            This is the number that CurrentLevel is determined from.
+            </summary>
+        </member>
+        <member name="P:Rust.Xp.Agent.SpentXp">
+            <summary>
+            The amount of XP the player has spent
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Agent.SetData(Rust.Xp.Agent.Data)">
+            <summary>
+            Called internally to completely replace an agent's data
+            </summary>
+        </member>
+        <member name="F:Rust.Xp.Agent.HasChanged">
+            <summary>
+            Gets set when EarnedXp or SpentXp changes.
+            </summary>
+        </member>
+        <member name="P:Rust.Xp.Agent.CurrentTime">
+            <summary>
+            The current time. If this isn't updated regularly timer based adds won't work.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Agent.SetValue(System.Int64,System.Single)">
+            <summary>
+            Used to restore values from a save. 
+            Should never be used other than that.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Agent.GetValues">
+            <summary>
+            Get all of the values for save/debug.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Agent.SpendXp(System.Int32,System.String)">
+            <summary>
+            Try to send this amount of xp. If not enough xp, or fails in another way, will return false.
+            </summary>
+        </member>
+        <member name="T:Rust.Xp.Container">
+            <summary>
+            Contains multiple agents. Usually one per server.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.#ctor(System.String,System.String)">
+            <summary>
+            If filename is set, we'll load and save from a database file here
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.Finalize">
+            <summary>
+            Call dispose when gc'd
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.GetAgent(System.UInt64)">
+            <summary>
+            Lookup an agent. If the agent isn't loaded it will be loaded from the database.
+            If it doesn't exist in the database we'll create a new entry.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.SaveAll">
+            <summary>
+            Save all current queue'd agents
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.Cycle">
+            <summary>
+            Should be called every frame
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.SaveSingle">
+            <summary>
+            Save a single agent from the front of the queue
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Container.Dispose">
+            <summary>
+            Dispose
+            </summary>
+        </member>
+        <member name="T:Rust.Xp.Statistics">
+            <summary>
+            Contains multiple agents. Usually one per server.
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Statistics.#ctor(System.String)">
+            <summary>
+            If filename is set, we'll load and save from a database file here
+            </summary>
+        </member>
+        <member name="M:Rust.Xp.Statistics.AddStat(System.UInt64,System.Single,System.String,System.Single)">
+            <summary>
+            Add a statistic to the database
+            </summary>
+        </member>
+    </members>
+</doc>

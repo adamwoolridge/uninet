@@ -1,0 +1,192 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Facepunch.Network</name>
+    </assembly>
+    <members>
+        <member name="F:Network.Client.connectedAddress">
+            <summary>
+            The IP address we're connected to (if any)
+            </summary>
+        </member>
+        <member name="F:Network.Client.connectedPort">
+            <summary>
+            The port we're connected to (if any)
+            </summary>
+        </member>
+        <member name="F:Network.Client.ServerName">
+            <summary>
+            The name of the server we're connected to
+            </summary>
+        </member>
+        <member name="F:Network.Client.IncomingStats">
+            <summary>
+            Client incoming statistics
+            </summary>
+        </member>
+        <member name="M:Network.Client.CreateNetworkable(System.UInt32,System.UInt32)">
+            <summary>
+            Creates a clientside only networkable.
+            </summary>
+        </member>
+        <member name="M:Network.Client.SetupNetworkable(Network.Networkable)">
+            <summary>
+            Set the clientside networking side of a networkable up.
+            </summary>
+        </member>
+        <member name="T:Network.Connection">
+            <summary>
+            On the server this represents a client connection. You should never see this interface on the client.
+            </summary>
+        </member>
+        <member name="F:Network.Connection.ipaddress">
+            <summary>
+            A string version of the IP address
+            </summary>
+        </member>
+        <member name="F:Network.Connection.player">
+            <summary>
+             Use this to hold your player. This should allow you to translate this connection to your player object quickly and easily.
+            </summary>
+        </member>
+        <member name="M:Network.Networkable.Destroy">
+            <summary>
+            This subscriber allows this connection to subscribe to visibility groups
+            </summary>
+        </member>
+        <member name="M:Network.Networkable.StartSubscriber">
+            <summary>
+            Becomes a subscriber - which means that view exists
+            </summary>
+        </member>
+        <member name="M:Network.Networkable.OnConnected(Network.Connection)">
+            <summary>
+            A connection has started using this Networkable
+            </summary>
+        </member>
+        <member name="M:Network.Networkable.OnDisconnected">
+            <summary>
+            Should be called by the server code once this Networkable is disconnected.
+            </summary>
+        </member>
+        <member name="M:Network.Networkable.UpdateGroups(UnityEngine.Vector3)">
+            <summary>
+            Update our visibility group and subscriptions etc based on this position
+            </summary>
+            <param name="position"></param>
+        </member>
+        <member name="F:Network.Server.onDisconnected">
+            <summary>
+            Called when a client disconnects
+            </summary>
+        </member>
+        <member name="F:Network.Server.debug">
+            <summary>
+            If enabled will output lots of debug information
+            </summary>
+        </member>
+        <member name="M:Network.Server.Reset">
+            <summary>
+            Returns all UIDs back to normal. This should be called
+            before loading a level, or calling Spawn() on any entities.
+            </summary>
+        </member>
+        <member name="T:Network.Visibility.Subscriber">
+            <summary>
+            A utility class to to attach to your players, to easily allow them to 
+            subscribe to groups.
+            </summary>
+        </member>
+        <member name="F:Network.Visibility.Subscriber.subscribed">
+            <summary>
+            A list of groups this subscriber is subscribed to
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Subscriber.Subscribe(Network.Visibility.Group)">
+            <summary>
+            Subscribe to a group.
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Subscriber.Subscribe(System.UInt32)">
+            <summary>
+            Subscribe to a group by ID.
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Subscriber.IsSubscribed(Network.Visibility.Group)">
+            <summary>
+            Returns true if we're subscribed to this group
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Subscriber.UnsubscribeAll">
+            <summary>
+            Remove from all groups
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Subscriber.Unsubscribe(Network.Visibility.Group)">
+            <summary>
+            Remove from specific group
+            </summary>
+        </member>
+        <member name="T:Network.Visibility.Group">
+            <summary>
+            A network group contains a bunch of networkables and a bunch
+            of subscribers. A networkable should only be in one group.
+            </summary>
+        </member>
+        <member name="P:Network.Visibility.Group.isGlobal">
+            <summary>
+            Return true if this is the global group
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Group.Join(Network.Networkable)">
+            <summary>
+            Add a networkable to this group
+            </summary>
+            <param name="nw"></param>
+        </member>
+        <member name="M:Network.Visibility.Group.Leave(Network.Networkable)">
+            <summary>
+            Remove a networkable from this group
+            </summary>
+            <param name="nw"></param>
+        </member>
+        <member name="T:Network.Visibility.Manager">
+            <summary>
+            A manager attached to the server.
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Manager.IsInside(Network.Visibility.Group,UnityEngine.Vector3@)">
+            <summary>
+            Return true if point is inside group
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Manager.GetGroup(UnityEngine.Vector3@)">
+            <summary>
+            Return the group for the specific position
+            </summary>
+        </member>
+        <member name="M:Network.Visibility.Manager.GetVisibleFrom(Network.Visibility.Group)">
+            <summary>
+            Return the groups that are visible from this group
+            </summary>
+        </member>
+        <member name="M:Network.Write.BytesWithSize(System.Byte[])">
+            <summary>
+            Legacy behaviour
+            </summary>
+        </member>
+        <member name="M:Network.Read.MemoryStreamWithSize">
+            <summary>
+            Use this whenever possible over BytesWithSize
+            This is pooled - so don't store the value!
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Network.Read.BytesWithSize">
+            <summary>
+            AVOID unless you're going to need to store a copy of the returned array
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

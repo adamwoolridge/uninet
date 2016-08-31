@@ -6,9 +6,9 @@ public class NetworkMessage
 {
     public NetworkMessageType MessageType;
 
-    BinaryWriter writer;
-    BinaryReader reader;
-    MemoryStream stream;
+    public BinaryWriter writer;
+    public BinaryReader reader;
+    public MemoryStream stream;
 
     public NetworkMessage(NetworkMessageType type)
     {        

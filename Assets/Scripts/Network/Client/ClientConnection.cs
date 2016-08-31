@@ -56,7 +56,10 @@ public static class ClientConnection
         if (ent.locallyControlled)                
             return;
         
-        ent.OnReceiveEntityUpdate(pos, rot);        
+        ent.OnReceiveEntityUpdate(pos, rot);
+
+        message.reader.Close();
+        message.stream.Close();
     }
 
     //private static NetworkEntity CreateEntity(uint netID, bool local)

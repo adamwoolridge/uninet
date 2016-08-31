@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Facepunch.Input</name>
+    </assembly>
+    <members>
+        <member name="M:Facepunch.Input.Frame">
+            <summary>
+            Should be called every frame to update inputs that need per frame thinkers
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.Update">
+            <summary>
+            Update the buttons. This will change button states and fire bind commands.
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.AddButton(System.String,System.Func{System.Boolean},System.Action)">
+            <summary>
+            Adds a new bindable button to the system.
+            </summary>
+            <param name="name">The name of the button, ie "F" or "Enter". Caps isn't important.</param>
+            <param name="TestFunction">Function to call to see whether the button is down</param>
+            <param name="FrameThink">Optional function to call every frame (usually to set button state from an axis etc)</param>
+        </member>
+        <member name="M:Facepunch.Input.SetBind(System.String,System.String)">
+            <summary>
+            Bind a button to run a command.
+            If the command begins with + it will be called on press and on release, with the first argument as a bool describing the state
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.ClearBinds">
+            <summary>
+            Remove all binds
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.GetAllBinds">
+            <summary>
+            Return every bound key
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.GetAllButtons">
+            <summary>
+            Return every key name
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.GetPressedButtons">
+            <summary>
+            Return every key name that is currently pressed
+            </summary>
+        </member>
+        <member name="M:Facepunch.Input.GetButtonsWithBind(System.String)">
+            <summary>
+            Get all buttons that are bound to this command
+            </summary>
+        </member>
+    </members>
+</doc>
