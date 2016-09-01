@@ -69,8 +69,8 @@ unsafe public class NetworkManager : MonoBehaviour
     {
         ptr = Native.NET_Create();
 
-        if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
-        //if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
+      //  if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
+        if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
         {
             IsServer = false;
             IsClient = true;

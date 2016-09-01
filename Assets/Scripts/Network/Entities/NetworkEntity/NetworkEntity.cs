@@ -16,7 +16,7 @@ public partial class NetworkEntity : MonoBehaviour
 
     public void Init()
     {        
-        if (NetworkManager.IsClient && locallyControlled || NetworkManager.IsServer)
+        if (NetworkManager.IsClient && locallyControlled)
         {
             float tick = 1.0f / (float)TicksPerSecond;
             InvokeRepeating("SendUpdate", 0f, tick);
@@ -25,23 +25,22 @@ public partial class NetworkEntity : MonoBehaviour
  
     private void SendUpdate()
     {
-        if (transform.hasChanged)
+        if (NetworkManager.IsClient && locallyControlled)
         {
-            if (NetworkManager.IsClient)
-            {            
-                NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-                updateMsg.Write(networkable.ID);
-                updateMsg.Write(Path);
-                updateMsg.Write(transform.position);
-                updateMsg.Write(transform.rotation);
-                NetworkManager.Instance.SendToServer(updateMsg);
-            }
-            if (NetworkManager.IsServer)
+            if (transform.hasChanged)
             {
-
+                if (NetworkManager.IsClient)
+                {
+                    NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+                    updateMsg.Write(networkable.ID);
+                    updateMsg.Write(Path);
+                    updateMsg.Write(transform.position);
+                    updateMsg.Write(transform.rotation);
+                    NetworkManager.Instance.SendToServer(updateMsg);
+                    transform.hasChanged = false;
+                }
             }
-            transform.hasChanged = false;
-        }
+        }        
     }
 
     public void Update()
@@ -56,6 +55,15 @@ public partial class NetworkEntity : MonoBehaviour
             {
                 transform.position = Vector3.Lerp(transform.position, realPos, Time.deltaTime * 5f);
                 transform.rotation = Quaternion.Lerp(transform.rotation, realRot, Time.deltaTime * 5f);
+            }
+        }
+
+        if (NetworkManager.IsServer)
+        {
+            if (transform.hasChanged)
+            {
+                UpdateGrid();
+                transform.hasChanged = false;
             }
         }
     }
