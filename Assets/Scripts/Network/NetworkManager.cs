@@ -247,7 +247,7 @@ unsafe public class NetworkManager : MonoBehaviour
      
         if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
         {
-            TestMassSpawn.Spawn("Cube", 50);
+            TestMassSpawn.Spawn("Cube", 300);
             SendEntities();
         }
     }

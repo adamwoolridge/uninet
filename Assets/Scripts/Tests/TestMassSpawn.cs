@@ -10,7 +10,7 @@ public static class TestMassSpawn
             GameObject obj = GameObject.Instantiate(Resources.Load(prefabpath)) as GameObject;
             NetworkEntity ent = obj.GetComponent<NetworkEntity>();            
             EntityManager.Register(ent);
-            obj.transform.position = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(5f, 5f));
+            obj.transform.position = new Vector3(Random.Range(0, 100f), 0f, Random.Range(0f, 100f));
 
         }
     }
