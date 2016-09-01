@@ -2,16 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using UnityEngine.Networking;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-//using Network;
-using Networking;
 using Networking.Raknet;
 
 unsafe public class NetworkManager : MonoBehaviour
-{
-     
+{     
     ulong clientConnectionID;
 
     private Dictionary<ulong, NetworkClientID> clients = new Dictionary<ulong, NetworkClientID>();
@@ -75,8 +69,8 @@ unsafe public class NetworkManager : MonoBehaviour
     {
         ptr = Native.NET_Create();
 
-        //if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
-        if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
+        if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
+        //if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
         {
             IsServer = false;
             IsClient = true;
@@ -107,14 +101,20 @@ unsafe public class NetworkManager : MonoBehaviour
     {
         if (IsServer)
         {            
-            Debug.Log("Client disconnected, removing ID: " + id);
+            DebugLog("Client disconnected, removing ID: " + id);
 
             NetworkEntity ent = EntityManager.Find(clients[id].NetID);
             if (ent!=null)
                 ent.Destroy();
 
             clients.Remove(id);                        
-        }        
+        }    
+        
+        if (IsClient)
+        {
+            DebugLog("Disconnected from server!");
+            ShutDown();
+        }
     }
 
     bool RaknetPacket(byte type)
@@ -135,10 +135,22 @@ unsafe public class NetworkManager : MonoBehaviour
             case PacketType.CONNECTION_REQUEST_ACCEPTED:
                 {
                     clientConnectionID = guid;
-                    Debug.Log("Connection request accepted");
-                    DebugLog("Connection request accepted, server con id: " + clientConnectionID);                    
+                    DebugLog("Connection request accepted, server con id: " + clientConnectionID);
                     return true;
                 }
+
+            case PacketType.DISCONNECTION_NOTIFICATION:
+                {
+                    ClientDisconnected(Native.NETRCV_GUID(ptr));
+                    return true;
+                }
+
+            case PacketType.CONNECTION_ATTEMPT_FAILED:
+                {
+                    DebugLog("Failed to connect!");
+                    ShutDown();
+                    return true;
+                }           
         }
 
         return false;
@@ -160,11 +172,8 @@ unsafe public class NetworkManager : MonoBehaviour
                 else
                 {                 
                     int length = System.BitConverter.ToInt32(ReadBytes(4), 0);
-
-                    Debug.Log(type + ":" + length);
-
-                    NetworkMessage message = new NetworkMessage(ReadBytes(length));
-                    Debug.Log(message.MessageType);
+                    
+                    NetworkMessage message = new NetworkMessage(ReadBytes(length));                    
                     if (IsServer)
                     {
                         ServerConnection.ReceivedMessage(message);
@@ -206,40 +215,17 @@ unsafe public class NetworkManager : MonoBehaviour
     void SendEntities()
     {
         if (EntityManager.entities.Count == 0) return;
-        
-        int remaining = EntityManager.entities.Count;
-
-        //NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-        //msg.Write((uint)Mathf.Min(20,remaining));
-
-        //int batchItemCount = 0;
-
-       
-            foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
-            {
-                NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-                msg.Write(1);
-                msg.Write(ent.Value.networkable.ID);
-                msg.Write(ent.Value.Path);
-                msg.Write(ent.Value.transform.position);
-                msg.Write(ent.Value.transform.rotation);
-                SendToClients(msg);
-             
-                //remaining--;
-                //batchItemCount++;
-                //if (batchItemCount == 20 || remaining==0)
-                //{                
-                //    batchItemCount = 0;
-
-                //    if (remaining > 0)
-                //    {
-                //        msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-                //        msg.Write((uint)Mathf.Min(20, remaining));
-                //    }
-                //}
-            }
-        
                      
+        foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
+        {
+            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+            msg.Write(1);
+            msg.Write(ent.Value.networkable.ID);
+            msg.Write(ent.Value.Path);
+            msg.Write(ent.Value.transform.position);
+            msg.Write(ent.Value.transform.rotation);
+            SendToClients(msg);             
+        }                             
     }
 
     void OnGUI()
@@ -251,14 +237,7 @@ unsafe public class NetworkManager : MonoBehaviour
 
         if (GUI.Button(new Rect(10, 200, 100, 100), "Client"))
             Connect();
-
-
-        //if (GUI.Button(new Rect(10, 300, 100, 100), "ToServer"))
-        //{
-        //    NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);
-        //    SendToServer(msg);
-        //}
-
+     
         if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
         {
             TestMassSpawn.Spawn("Cube", 50);

@@ -9,7 +9,7 @@ public static class TestMassSpawn
         {
             GameObject obj = GameObject.Instantiate(Resources.Load(prefabpath)) as GameObject;
             NetworkEntity ent = obj.GetComponent<NetworkEntity>();            
-            uint netID = EntityManager.Register(ent);
+            EntityManager.Register(ent);
             obj.transform.position = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(5f, 5f));
 
         }

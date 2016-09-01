@@ -11,7 +11,7 @@ public static class ClientConnection
         {
             case NetworkMessageType.Entity_LocalPlayerCreated:
                 {
-                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), message.ReadString(), true);                    
+                    CreateEntity(message.ReadUInt(), message.ReadString(), true);                    
                     return;
                 }
             case NetworkMessageType.Entity_UpdateTransform:
@@ -63,8 +63,7 @@ public static class ClientConnection
         message.reader.Close();
         message.stream.Close();
     }
-
-    //private static NetworkEntity CreateEntity(uint netID, bool local)
+    
     private static NetworkEntity CreateEntity(uint netID, string path, bool local)
     {        
         GameObject obj = GameObject.Instantiate(Resources.Load("Cube")) as GameObject;
@@ -77,7 +76,7 @@ public static class ClientConnection
 
     private static void OnChat(NetworkMessage message)
     {
-        uint userID = message.ReadUInt();
+        //uint userID = message.ReadUInt();
         string chatText = message.ReadString();
 
         Debug.Log(chatText);

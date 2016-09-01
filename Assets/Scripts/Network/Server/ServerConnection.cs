@@ -22,9 +22,7 @@ public static class ServerConnection
     }
 
     public static NetworkClientID PlayerConnected(ulong connectionID)
-    {
-        Debug.Log("Client connected with ID: " + connectionID);
-
+    {        
         GameObject obj = GameObject.Instantiate(Resources.Load("Cube")) as GameObject;        
         NetworkEntity ent = obj.GetComponent<NetworkEntity>();
 

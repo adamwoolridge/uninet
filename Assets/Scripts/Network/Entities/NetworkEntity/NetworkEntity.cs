@@ -28,8 +28,7 @@ public partial class NetworkEntity : MonoBehaviour
         if (transform.hasChanged)
         {
             if (NetworkManager.IsClient)
-            {
-                Debug.Log("sending update to server");
+            {            
                 NetworkMessage updateMsg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
                 updateMsg.Write(networkable.ID);
                 updateMsg.Write(Path);
