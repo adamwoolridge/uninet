@@ -50,13 +50,18 @@ public static class ClientConnection
         
         NetworkEntity ent = EntityManager.Find(id);
 
-        if (ent==null)        
-            ent = CreateEntity(id, path, false);        
-        
+        bool justCreated = false;
+
+        if (ent==null)   
+        {     
+            ent = CreateEntity(id, path, false);  
+            justCreated = true;      
+        }
+
         if (ent.locallyControlled)                
             return;
         
-        ent.OnReceiveEntityUpdate(pos, rot);
+        ent.OnReceiveEntityUpdate(pos, rot, !justCreated);
 
         message.reader.Close();
         message.stream.Close();

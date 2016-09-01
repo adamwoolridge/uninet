@@ -49,7 +49,7 @@ public partial class NetworkEntity : MonoBehaviour
         {
             if (locallyControlled)
             {
-                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")) * 2f * Time.deltaTime;
+                transform.position += new Vector3(Input.GetAxis("Horizontal"), 0f, Input.GetAxis("Vertical")) * 5f * Time.deltaTime;
             }
             else
             {
@@ -86,12 +86,12 @@ public partial class NetworkEntity : MonoBehaviour
             Destroy(gameObject);
     }
 
-    public void OnReceiveEntityUpdate(Vector3 pos, Quaternion rot)
+    public void OnReceiveEntityUpdate(Vector3 pos, Quaternion rot, bool lerp = true)
     {
         realPos = pos;
         realRot = rot;
 
-        if (NetworkManager.IsServer)
+        if (NetworkManager.IsServer || !lerp)
         {
             transform.position = realPos;
             transform.rotation = realRot;
