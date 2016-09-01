@@ -5,20 +5,17 @@ using System.Collections;
 using UnityEditor;
 #endif
 
-public class TestGrid : MonoBehaviour {
-
-    Grid grid;
-
+public class GridDisplay : MonoBehaviour {    
 	// Use this for initialization
 	void Start () {        
-        grid = new Grid(10, 10, 10f);
+        
 	}
 
     void OnDrawGizmos()
     {
-        if (grid == null) return;
+        if (Grid.Instance == null) return;        
 
-        foreach(GridCell cell in grid.Cells)
+        foreach(GridCell cell in Grid.Instance.Cells)
         {
             Gizmos.DrawWireCube(cell.BoundingBox.center, cell.BoundingBox.size);
 
@@ -27,9 +24,4 @@ public class TestGrid : MonoBehaviour {
 #endif
         }
     }
-
-    // Update is called once per frame
-    void Update () {
-	
-	}
 }

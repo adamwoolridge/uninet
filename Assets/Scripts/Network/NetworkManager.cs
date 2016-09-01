@@ -46,6 +46,8 @@ unsafe public class NetworkManager : MonoBehaviour
     
     public void Host()
     {
+        if (connected) return;
+
         ptr = Native.NET_Create();
 
         if (Native.NET_StartServer(ptr, "", 8888, 128) == 0)
@@ -63,10 +65,14 @@ unsafe public class NetworkManager : MonoBehaviour
             DebugLog("Failed to start server!");
             ShutDown();
         }
+
+        Grid grid = new Grid(10, 10, 10f);
     }
- 
+
     public void Connect()
     {
+        if (connected) return;
+
         ptr = Native.NET_Create();
 
       //  if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
