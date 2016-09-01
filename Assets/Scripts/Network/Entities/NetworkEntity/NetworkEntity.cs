@@ -77,6 +77,9 @@ public partial class NetworkEntity : MonoBehaviour
             NetworkManager.Instance.SendToClients(msg);
         }
 
+        if (gridCell!=null)        
+            gridCell.OnEntityExit(this);
+        
         EntityManager.Unregister(this);
 
         if (gameObject!=null)

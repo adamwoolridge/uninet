@@ -10,7 +10,7 @@ public class TestGrid : MonoBehaviour {
     Grid grid;
 
 	// Use this for initialization
-	void Start () {
+	void Start () {        
         grid = new Grid(10, 10, 10f);
 	}
 

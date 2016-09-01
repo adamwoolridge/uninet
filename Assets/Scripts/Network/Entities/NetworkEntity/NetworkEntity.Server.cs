@@ -7,7 +7,7 @@ public partial class NetworkEntity : MonoBehaviour
     public void OnDestroy()
     {
         if (NetworkManager.IsServer)
-        {
+        {           
             Destroy();
         }
     }   
