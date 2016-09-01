@@ -28,7 +28,7 @@ public static class ServerConnection
         ent.locallyControlled = false;
         uint netID = EntityManager.Register(ent);
         NetworkClientID netClientID = new NetworkClientID(connectionID, netID);
-
+        ent.clientID = netClientID;
         obj.transform.position = Vector3.zero;
 
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);

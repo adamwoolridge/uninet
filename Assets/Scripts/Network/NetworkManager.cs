@@ -220,11 +220,11 @@ unsafe public class NetworkManager : MonoBehaviour
         }
     }
 
-    /// /////////////////////////////// HACKKKK this sends to ALL clients. Just for single client testing atm
-    public void SendEntities(HashSet<NetworkEntity> entities)
+    public void SendEntities(NetworkClientID clientID, HashSet<NetworkEntity> entities)
     {
         if (entities == null || entities.Count == 0) return;
-                     
+       	if (clientID == null) return;
+       	              
         foreach (NetworkEntity ent in entities)
         {
             NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
@@ -233,7 +233,7 @@ unsafe public class NetworkManager : MonoBehaviour
             msg.Write(ent.Path);
             msg.Write(ent.transform.position);
             msg.Write(ent.transform.rotation);
-            SendToClients(msg);             
+            Send(clientID.ConnectionID, msg);             
         }                             
     }
 

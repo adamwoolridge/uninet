@@ -21,7 +21,7 @@ public class GridCell
         
         if (!entity.locallyControlled) // HACK, means a player for now
         {
-            NetworkManager.Instance.SendEntities(Entities);
+            NetworkManager.Instance.SendEntities(entity.clientID, Entities);
         }
         // Now notify shit
 

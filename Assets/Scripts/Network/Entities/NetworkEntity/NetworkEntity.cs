@@ -8,7 +8,7 @@ public partial class NetworkEntity : MonoBehaviour
     public int TicksPerSecond = 10;
     
     public Networkable networkable;
-
+    public NetworkClientID clientID;
     public bool locallyControlled = false;
 
     Vector3 realPos;
