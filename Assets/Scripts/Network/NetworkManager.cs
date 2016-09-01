@@ -59,14 +59,14 @@ unsafe public class NetworkManager : MonoBehaviour
             IsServer = true;
             IsClient = false;
             connected = true;
-            Debug.Log("Hosting!");
+            DebugLog("Hosting!");
         }
         else
         {
             connected = false;
             IsServer = false;
             IsClient = false;
-            Debug.Log("Cannot start server");
+            DebugLog("Failed to start server!");
             ShutDown();
         }
     }
@@ -75,12 +75,13 @@ unsafe public class NetworkManager : MonoBehaviour
     {
         ptr = Native.NET_Create();
 
-        if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
+        //if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
+        if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
         {
             IsServer = false;
             IsClient = true;
-            connected = true;         
-            Debug.Log("Connected?");
+            connected = true;
+            DebugLog("connected?");
             return;
         }
         else
@@ -88,7 +89,7 @@ unsafe public class NetworkManager : MonoBehaviour
             IsServer = false;
             IsClient = false;
             connected = false;
-            Debug.Log("Failed to connect");
+            DebugLog("Failed to connect");
             ShutDown();
         }     
     }
@@ -118,6 +119,8 @@ unsafe public class NetworkManager : MonoBehaviour
 
     bool RaknetPacket(byte type)
     {
+        if (type == 180) return false;
+
         ulong guid = Native.NETRCV_GUID(ptr);
 
         switch (type)
@@ -131,9 +134,9 @@ unsafe public class NetworkManager : MonoBehaviour
 
             case PacketType.CONNECTION_REQUEST_ACCEPTED:
                 {
+                    clientConnectionID = guid;
                     Debug.Log("Connection request accepted");
-
-                    clientConnectionID = guid;                    
+                    DebugLog("Connection request accepted, server con id: " + clientConnectionID);                    
                     return true;
                 }
         }
@@ -149,19 +152,19 @@ unsafe public class NetworkManager : MonoBehaviour
             while (Native.NET_Receive(ptr))
             {
                 byte type = ReadBytes(1)[0];
-                Debug.Log(type);
-                
+                              
                 if (RaknetPacket(type))
                 {
                     
                 }
                 else
-                {
-                    Debug.Log("Non raknet packet received!");
+                {                 
                     int length = System.BitConverter.ToInt32(ReadBytes(4), 0);
-                    Debug.Log("Length: " + length);
-                    NetworkMessage message = new NetworkMessage(ReadBytes(length));
 
+                    Debug.Log(type + ":" + length);
+
+                    NetworkMessage message = new NetworkMessage(ReadBytes(length));
+                    Debug.Log(message.MessageType);
                     if (IsServer)
                     {
                         ServerConnection.ReceivedMessage(message);
@@ -250,17 +253,17 @@ unsafe public class NetworkManager : MonoBehaviour
             Connect();
 
 
-        if (GUI.Button(new Rect(10, 300, 100, 100), "ToServer"))
-        {
-            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);
-            SendToServer(msg);
-        }
-
-        //if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
+        //if (GUI.Button(new Rect(10, 300, 100, 100), "ToServer"))
         //{
-        //    TestMassSpawn.Spawn("Cube", 50);
-        //    SendEntities();
+        //    NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);
+        //    SendToServer(msg);
         //}
+
+        if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
+        {
+            TestMassSpawn.Spawn("Cube", 50);
+            SendEntities();
+        }
     }
 
 
@@ -283,11 +286,12 @@ unsafe public class NetworkManager : MonoBehaviour
 
         byte[] bytes = message.GetData();
 
-        Native.NETSND_Start(ptr);        
+        Native.NETSND_Start(ptr);
+        WriteBytes(new byte[] { 180 });
         WriteBytes(System.BitConverter.GetBytes(bytes.Length));
         WriteBytes(bytes);
 
-        Native.NETSND_Send(ptr, targetId, 0, 2, 0);
+        Native.NETSND_Send(ptr, targetId, 2, 2, 0);
     }
 
     private void DebugLog(string text)
