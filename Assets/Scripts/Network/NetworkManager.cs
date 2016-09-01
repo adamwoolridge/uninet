@@ -66,7 +66,8 @@ unsafe public class NetworkManager : MonoBehaviour
             ShutDown();
         }
 
-        Grid grid = new Grid(10, 10, 10f);
+        // Move this to server init when I star that shit for realz
+        new Grid(10, 10, 10f);
     }
 
     public void Connect()
