@@ -219,18 +219,19 @@ unsafe public class NetworkManager : MonoBehaviour
         }
     }
 
-    void SendEntities()
+    /// /////////////////////////////// HACKKKK this sends to ALL clients. Just for single client testing atm
+    public void SendEntities(HashSet<NetworkEntity> entities)
     {
-        if (EntityManager.entities.Count == 0) return;
+        if (entities == null || entities.Count == 0) return;
                      
-        foreach (KeyValuePair<uint, NetworkEntity> ent in EntityManager.entities)
+        foreach (NetworkEntity ent in entities)
         {
             NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
             msg.Write(1);
-            msg.Write(ent.Value.networkable.ID);
-            msg.Write(ent.Value.Path);
-            msg.Write(ent.Value.transform.position);
-            msg.Write(ent.Value.transform.rotation);
+            msg.Write(ent.networkable.ID);
+            msg.Write(ent.Path);
+            msg.Write(ent.transform.position);
+            msg.Write(ent.transform.rotation);
             SendToClients(msg);             
         }                             
     }
@@ -248,7 +249,7 @@ unsafe public class NetworkManager : MonoBehaviour
         if (GUI.Button(new Rect(10, 300, 100, 100), "Spawn test"))
         {
             TestMassSpawn.Spawn("Cube", 300);
-            SendEntities();
+            //SendEntities();
         }
     }
 

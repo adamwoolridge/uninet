@@ -25,7 +25,7 @@ public static class ServerConnection
     {        
         GameObject obj = GameObject.Instantiate(Resources.Load("Cube")) as GameObject;        
         NetworkEntity ent = obj.GetComponent<NetworkEntity>();
-
+        ent.locallyControlled = false;
         uint netID = EntityManager.Register(ent);
         NetworkClientID netClientID = new NetworkClientID(connectionID, netID);
 
