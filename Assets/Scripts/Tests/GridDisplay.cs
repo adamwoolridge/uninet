@@ -20,7 +20,12 @@ public class GridDisplay : MonoBehaviour {
             Gizmos.DrawWireCube(cell.BoundingBox.center, cell.BoundingBox.size);
 
 #if UNITY_EDITOR
-            Handles.Label(cell.BoundingBox.center, cell.Entities.Count.ToString());
+            int count = cell.Entities.Count;
+            if (count > 0)
+                Handles.color = Color.green;
+            else
+                Handles.color = Color.grey;
+            Handles.Label(cell.BoundingBox.center, count.ToString());
 #endif
         }
     }
