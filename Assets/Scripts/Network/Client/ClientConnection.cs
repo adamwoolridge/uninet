@@ -69,7 +69,7 @@ public static class ClientConnection
     
     private static NetworkEntity CreateEntity(uint netID, string path, bool local)
     {        
-        GameObject obj = GameObject.Instantiate(Resources.Load("Cube")) as GameObject;
+        GameObject obj = GameObject.Instantiate(Resources.Load(path)) as GameObject;
         NetworkEntity ent = obj.GetComponent<NetworkEntity>();
         ent.locallyControlled = local;
         EntityManager.Register(ent, netID);

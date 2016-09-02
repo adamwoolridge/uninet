@@ -107,6 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9288100dc55bb824cb54a1d1ee1ad34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Path: PamTree01
+  Path: PalmTree01
   TicksPerSecond: 10
   locallyControlled: 0
