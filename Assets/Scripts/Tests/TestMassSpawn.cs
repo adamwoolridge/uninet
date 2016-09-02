@@ -12,7 +12,7 @@ public static class TestMassSpawn
             ent.locallyControlled = true;        
             EntityManager.Register(ent);
             obj.transform.position = new Vector3(Random.Range(0, 100f), 0f, Random.Range(0f, 100f));
-
+            obj.transform.eulerAngles = new Vector3(0f, Random.Range(0, 359f), 0f);
         }
     }
 }
