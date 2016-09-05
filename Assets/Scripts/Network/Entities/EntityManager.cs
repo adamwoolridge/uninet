@@ -52,7 +52,10 @@ public static class EntityManager
             List<NetworkEntity> toDelete = entities.Values.ToList();
 
             foreach (NetworkEntity ne in toDelete)
-                ne.Destroy();            
+            {
+                if (ne.locallyControlled) continue; // Don't delete the local player 
+                ne.Destroy();
+            }
         }
     }
 }
