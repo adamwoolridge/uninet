@@ -9,12 +9,11 @@ public static class ClientConnection
         {
             case NetworkMessageType.Entity_LocalPlayerCreated:
                 {
-                    CreateEntity(message.ReadUInt(), message.ReadString(), true);                    
+                    CreateEntity(message.ReadUInt(), message.ReadUInt(), message.ReadString(), true);                    
                     return;
                 }
             case NetworkMessageType.Entity_UpdateTransform:
-                {
-                    Debug.Log("Update entity");
+                {                    
                     uint count = message.ReadUInt();
                     for (int i=0; i< count; i++)
                     {
@@ -23,10 +22,14 @@ public static class ClientConnection
                     return;
                 }
             case NetworkMessageType.Entity_Destroy:
-                {
-                    Debug.Log("DESTROY entity");
+                {                    
                     OnEntityDestroyed(message);                    
                     return;                  
+                }
+            case NetworkMessageType.Cell_Destroy:
+                {
+                    OnCellDestryoyed(message);
+                    return;
                 }
             case NetworkMessageType.Chat:
                 {
@@ -43,9 +46,15 @@ public static class ClientConnection
         ent.Destroy();
     }
 
+    private static void OnCellDestryoyed(NetworkMessage message)
+    {
+        EntityManager.DestroyCell(message.ReadUInt());
+    }
+
     private static void OnEntityUpdate(NetworkMessage message)
     {
         uint id = message.ReadUInt();
+        uint cellID = message.ReadUInt();
         string path = message.ReadString();
         Vector3 pos = message.ReadVector3();
         Quaternion rot = message.ReadQuaternion();
@@ -56,9 +65,11 @@ public static class ClientConnection
 
         if (ent==null)   
         {     
-            ent = CreateEntity(id, path, false);  
+            ent = CreateEntity(id, cellID, path, false);  
             justCreated = true;      
         }
+
+        ent.cellID = cellID;
 
         if (ent.locallyControlled)                
             return;
@@ -69,10 +80,11 @@ public static class ClientConnection
         message.stream.Close();
     }
     
-    private static NetworkEntity CreateEntity(uint netID, string path, bool local)
+    private static NetworkEntity CreateEntity(uint netID, uint cellID, string path, bool local)
     {        
         GameObject obj = GameObject.Instantiate(Resources.Load(path)) as GameObject;
         NetworkEntity ent = obj.GetComponent<NetworkEntity>();
+        ent.cellID = cellID;
         ent.locallyControlled = local;
         EntityManager.Register(ent, netID);
         ent.Init();

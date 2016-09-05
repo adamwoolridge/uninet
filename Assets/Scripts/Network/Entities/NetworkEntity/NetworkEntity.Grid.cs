@@ -5,9 +5,10 @@ using UnityEngine.Networking;
 public partial class NetworkEntity : MonoBehaviour
 {
     public GridCell gridCell;
+    public uint cellID;
 
     // Called on server when an NE's transform has changed
-    protected void UpdateGrid()
+    public void UpdateGrid()
     {
         if (Grid.Instance == null) return;
 

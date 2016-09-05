@@ -29,10 +29,10 @@ public static class ServerConnection
         uint netID = EntityManager.Register(ent);
         NetworkClientID netClientID = new NetworkClientID(connectionID, netID);
         ent.clientID = netClientID;
-        obj.transform.position = Vector3.zero;
-
+        obj.transform.position = Vector3.zero;        
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_LocalPlayerCreated);
         msg.Write(netClientID.NetID);
+        msg.Write(Grid.Instance.GetCell(obj.transform.position).Index);
         msg.Write(ent.Path);
         NetworkManager.Instance.Send(netClientID.ConnectionID, msg);
 
@@ -41,7 +41,7 @@ public static class ServerConnection
 
 	private static void OnEntityUpdate(NetworkMessage message)
     {
-        uint id = message.ReadUInt();
+        uint id = message.ReadUInt();        
         string path = message.ReadString();
         Vector3 pos = message.ReadVector3();
         Quaternion rot = message.ReadQuaternion();
@@ -59,10 +59,12 @@ public static class ServerConnection
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
         msg.Write(1);
         msg.Write(id);
+        msg.Write(ent.cellID);
         msg.Write(path);
         msg.Write(pos);
         msg.Write(rot);
-        NetworkManager.Instance.SendToClients(msg);
+
+        NetworkManager.Instance.SendToCell(ent.gridCell, msg);
     }
 
     private static void OnChat(NetworkMessage message)

@@ -225,6 +225,7 @@ unsafe public class NetworkManager : MonoBehaviour
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
         msg.Write(1);
         msg.Write(entity.networkable.ID);
+        msg.Write(entity.cellID);
         msg.Write(entity.Path);
         msg.Write(entity.transform.position);
         msg.Write(entity.transform.rotation);
@@ -272,7 +273,15 @@ unsafe public class NetworkManager : MonoBehaviour
             Send(client.Key, netMsg);
         }
     }
-       
+    
+    public void SendToCell(GridCell cell, NetworkMessage message)
+    {
+        foreach (NetworkEntity ne in cell.Listeners)
+        {
+            Send(ne.clientID.ConnectionID, message);
+        }
+    }
+
     public void Send(ulong targetId, NetworkMessage message)
     {
         if (!connected) return;

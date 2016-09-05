@@ -27,11 +27,12 @@ public class Grid
 
         Cells = new List<GridCell>();
 
+        uint index = 0;
         for (int y=0; y<depth; y++)
         {
             for (int x = 0; x < width; x++)
             {
-                GridCell cell = new GridCell( new Vector3((x*cellSize)+(cellSize/2f), 0f,(y*cellSize)+(cellSize/2f)), cellSize );
+                GridCell cell = new GridCell( new Vector3((x*cellSize)+(cellSize/2f), 0f,(y*cellSize)+(cellSize/2f)), cellSize, index);
                 Cells.Add(cell);
             }
         }
@@ -60,6 +61,46 @@ public class Grid
             oldCell.OnEntityExit(ent);        
 
         if (newCell!=null)        
-            newCell.OnEntityEnter(ent);                                   
+            newCell.OnEntityEnter(ent);
+
+
+        // TODO: make this all work with multiple groups for propper ranged visibility
+
+        // Tell old cell listeners to destroy this entity        
+        if (oldCell != null)
+        {
+            oldCell.Listeners.Remove(ent);
+
+            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_Destroy);
+            msg.Write(ent.networkable.ID);
+            foreach (NetworkEntity e in oldCell.Listeners)
+            {
+                NetworkManager.Instance.Send(e.clientID.ConnectionID, msg);
+            }
+
+            // Tell the entity to delete all entities in the old cell
+            NetworkMessage delCellMsg = new NetworkMessage(NetworkMessageType.Cell_Destroy);
+            delCellMsg.Write(oldCell.Index);
+            NetworkManager.Instance.Send(ent.clientID.ConnectionID, delCellMsg);
+        }
+
+        // Tell the new cell listeners about this entity
+        if (newCell != null)
+        {         
+            foreach (NetworkEntity e in newCell.Listeners)
+            {                
+                NetworkManager.Instance.SendEntity(e.clientID, ent);
+            }
+
+            //// HACK, means a player for now.
+            if (!ent.locallyControlled)
+            {
+                // Add new entity to listeners
+                newCell.Listeners.Add(ent);
+
+                // Tell the new entity about all the other entities in the cell
+                NetworkManager.Instance.SendEntities(ent.clientID, newCell.Entities);
+            }
+        }
     }
 }

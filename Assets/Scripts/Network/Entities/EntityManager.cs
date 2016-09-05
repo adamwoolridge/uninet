@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public static class EntityManager
 {
@@ -42,5 +43,16 @@ public static class EntityManager
             return ent;        
         else        
             return null;        
+    }
+
+    public static void DestroyCell(uint id)
+    {
+        if (NetworkManager.IsClient)
+        {
+            List<NetworkEntity> toDelete = entities.Values.ToList();
+
+            foreach (NetworkEntity ne in toDelete)
+                ne.Destroy();            
+        }
     }
 }
