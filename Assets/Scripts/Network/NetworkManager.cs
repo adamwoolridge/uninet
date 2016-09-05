@@ -76,9 +76,9 @@ unsafe public class NetworkManager : MonoBehaviour
 
         ptr = Native.NET_Create();
 
-      //  if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
+       if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
      //   if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
-		if (Native.NET_StartClient(ptr, "192.168.1.104", 8888, 10, 500, 0) == 0)
+//		if (Native.NET_StartClient(ptr, "192.168.1.104", 8888, 10, 500, 0) == 0)
         {
             IsServer = false;
             IsClient = true;
@@ -220,6 +220,17 @@ unsafe public class NetworkManager : MonoBehaviour
         }
     }
 
+    public void SendEntity(NetworkClientID clientID, NetworkEntity entity)
+    {        
+        NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
+        msg.Write(1);
+        msg.Write(entity.networkable.ID);
+        msg.Write(entity.Path);
+        msg.Write(entity.transform.position);
+        msg.Write(entity.transform.rotation);
+        Send(clientID.ConnectionID, msg);
+    }
+
     public void SendEntities(NetworkClientID clientID, HashSet<NetworkEntity> entities)
     {
         if (entities == null || entities.Count == 0) return;
@@ -227,13 +238,7 @@ unsafe public class NetworkManager : MonoBehaviour
        	              
         foreach (NetworkEntity ent in entities)
         {
-            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
-            msg.Write(1);
-            msg.Write(ent.networkable.ID);
-            msg.Write(ent.Path);
-            msg.Write(ent.transform.position);
-            msg.Write(ent.transform.rotation);
-            Send(clientID.ConnectionID, msg);             
+            SendEntity(clientID, ent);
         }                             
     }
 

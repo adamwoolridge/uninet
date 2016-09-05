@@ -14,6 +14,7 @@ public static class ClientConnection
                 }
             case NetworkMessageType.Entity_UpdateTransform:
                 {
+                    Debug.Log("Update entity");
                     uint count = message.ReadUInt();
                     for (int i=0; i< count; i++)
                     {
@@ -23,6 +24,7 @@ public static class ClientConnection
                 }
             case NetworkMessageType.Entity_Destroy:
                 {
+                    Debug.Log("DESTROY entity");
                     OnEntityDestroyed(message);                    
                     return;                  
                 }

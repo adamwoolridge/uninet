@@ -23,5 +23,5 @@ public partial class NetworkEntity : MonoBehaviour
                 Grid.Instance.TransferEntity(this, gridCell, newCell);          
             }
         }
-    }
+    }    
 }
