@@ -34,8 +34,14 @@ public class Grid
             {
                 GridCell cell = new GridCell( new Vector3((x*cellSize)+(cellSize/2f), 0f,(y*cellSize)+(cellSize/2f)), cellSize, index);
                 Cells.Add(cell);
+                index++;                
             }
         }
+    }
+
+    public GridCell GetCell(int xIndex, int yIndex)
+    {
+        return Cells[(yIndex * yCells) + xIndex];
     }
 
     public GridCell GetCell(Vector3 pos)
@@ -49,7 +55,26 @@ public class Grid
             return null;
         }
 
-        return Cells[(y * yCells) + x];
+        return GetCell(x, y);
+    }
+
+    public List<GridCell> GetNeighbours(GridCell cell, int depth)
+    {
+        int yIndex = (int)cell.Index/xCells;
+        int xIndex = (int)cell.Index - (yIndex*yCells);
+        List<GridCell> neighbours = new List<GridCell>();
+
+        for (int y = yIndex-depth; y < yIndex+depth+1; y++ )
+        {
+            for (int x= xIndex-depth; x<xIndex+depth+1; x++)
+            {
+                if (x >= 0 && x < xCells && y >= 0 && y < yCells )
+                {
+                    neighbours.Add(GetCell(x, y));
+                }
+            }
+        }
+        return neighbours;
     }
 
     public void TransferEntity(NetworkEntity ent, GridCell oldCell, GridCell newCell)
@@ -65,6 +90,7 @@ public class Grid
 
 
         // TODO: make this all work with multiple groups for propper ranged visibility
+        
 
         // Tell old cell listeners to destroy this entity        
         if (oldCell != null)
