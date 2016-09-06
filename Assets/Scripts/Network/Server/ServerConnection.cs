@@ -64,7 +64,7 @@ public static class ServerConnection
         msg.Write(pos);
         msg.Write(rot);
 
-        NetworkManager.Instance.SendToCell(ent.gridCell, msg);
+        NetworkManager.Instance.SendToCell(ent.gridCell, msg, ent.clientID);
     }
 
     private static void OnChat(NetworkMessage message)
