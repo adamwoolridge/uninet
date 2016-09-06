@@ -42,9 +42,11 @@ public static class ClientConnection
 
     private static void OnEntityDestroyed(NetworkMessage message)
     {
-        uint id = message.ReadUInt();
+        uint id = message.ReadUInt();        
         NetworkEntity ent = EntityManager.Find(id);
-        ent.Destroy();
+
+        if (ent!=null)
+            ent.Destroy();
     }
 
     private static void OnCellDestryoyed(NetworkMessage message)

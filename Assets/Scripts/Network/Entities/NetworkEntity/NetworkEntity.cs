@@ -75,11 +75,11 @@ public partial class NetworkEntity : MonoBehaviour
             NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_Destroy);
             msg.Write(networkable.ID);
             NetworkManager.Instance.SendToClients(msg);
-        }
 
-        if (gridCell!=null)        
-            gridCell.OnEntityExit(this);
-        
+            if (gridCell != null)
+                gridCell.OnEntityExit(this);
+        }
+               
         EntityManager.Unregister(this);
 
         if (gameObject!=null)
