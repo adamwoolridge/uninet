@@ -14,6 +14,7 @@ public class GridDisplay : MonoBehaviour
 
     }
 
+#if UNITY_EDITOR
     void OnDrawGizmos()
     {
         if (Grid.Instance == null) return;
@@ -23,12 +24,12 @@ public class GridDisplay : MonoBehaviour
         {
             Gizmos.DrawWireCube(cell.BoundingBox.center, cell.BoundingBox.size);
 
-#if UNITY_EDITOR
+
             int count = cell.Entities.Count;
             Handles.Label(cell.BoundingBox.center, count.ToString());
-#endif
+
         }
-#if UNITY_EDITOR
+
         if (Grid.Instance != null)
         {
             GameObject selectedObject = Selection.activeGameObject;
@@ -58,6 +59,6 @@ public class GridDisplay : MonoBehaviour
                 }                
             }
         }
-#endif
     }
+#endif
 }
