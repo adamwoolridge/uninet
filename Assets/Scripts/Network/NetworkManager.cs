@@ -77,7 +77,7 @@ unsafe public class NetworkManager : MonoBehaviour
         ptr = Native.NET_Create();
 
        if (Native.NET_StartClient(ptr, "127.0.01", 8888, 10, 500, 0) == 0)
-     //   if (Native.NET_StartClient(ptr, "86.179.63.182", 8888, 10, 500, 0) == 0)
+      // if (Native.NET_StartClient(ptr, "109.157.121.151", 8888, 10, 500, 0) == 0)
 //		if (Native.NET_StartClient(ptr, "192.168.1.104", 8888, 10, 500, 0) == 0)
         {
             IsServer = false;
@@ -225,7 +225,7 @@ unsafe public class NetworkManager : MonoBehaviour
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
         msg.Write(1);
         msg.Write(entity.networkable.ID);
-        msg.Write(entity.cellID);
+        msg.Write(entity.gridCell.Index);
         msg.Write(entity.Path);
         msg.Write(entity.transform.position);
         msg.Write(entity.transform.rotation);

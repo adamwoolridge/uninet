@@ -59,7 +59,7 @@ public static class ServerConnection
         NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_UpdateTransform);
         msg.Write(1);
         msg.Write(id);
-        msg.Write(ent.cellID);
+        msg.Write(ent.gridCell.Index);
         msg.Write(path);
         msg.Write(pos);
         msg.Write(rot);

@@ -54,7 +54,8 @@ public static class EntityManager
             foreach (NetworkEntity ne in toDelete)
             {
                 if (ne.locallyControlled) continue; // Don't delete the local player 
-                ne.Destroy();
+                if (ne.cellID == id)
+                    ne.Destroy();
             }
         }
     }

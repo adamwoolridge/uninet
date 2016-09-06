@@ -89,44 +89,87 @@ public class Grid
             newCell.OnEntityEnter(ent);
 
 
-        // TODO: make this all work with multiple groups for propper ranged visibility
-        
 
-        // Tell old cell listeners to destroy this entity        
-        if (oldCell != null)
+        if (!ent.locallyControlled)
         {
-            oldCell.Listeners.Remove(ent);
+            List<GridCell> oldVisCells = oldCell != null ? GetNeighbours(oldCell, 2) : null;
+            List<GridCell> newVisCells = newCell != null ? GetNeighbours(newCell, 2) : null;
+            List<GridCell> leaveCells;
+            List<GridCell> enterCells;
+            List<GridCell> remainCells;
+            Utils.CategorizeDifferences<GridCell>(oldVisCells, newVisCells, out enterCells, out leaveCells, out remainCells);
 
-            NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_Destroy);
-            msg.Write(ent.networkable.ID);
-            foreach (NetworkEntity e in oldCell.Listeners)
+            if (enterCells != null)
             {
-                NetworkManager.Instance.Send(e.clientID.ConnectionID, msg);
+                foreach (GridCell cell in enterCells)
+                {                    
+                    NetworkManager.Instance.SendEntities(ent.clientID, cell.Entities);
+                }
             }
 
-            // Tell the entity to delete all entities in the old cell
-            NetworkMessage delCellMsg = new NetworkMessage(NetworkMessageType.Cell_Destroy);
-            delCellMsg.Write(oldCell.Index);
-            NetworkManager.Instance.Send(ent.clientID.ConnectionID, delCellMsg);
+            if (leaveCells != null)
+            {
+                foreach (GridCell cell in leaveCells)
+                {                 
+                    NetworkMessage delCellMsg = new NetworkMessage(NetworkMessageType.Cell_Destroy);
+                    delCellMsg.Write(cell.Index);
+                    NetworkManager.Instance.Send(ent.clientID.ConnectionID, delCellMsg);
+                }
+            }            
         }
 
-        // Tell the new cell listeners about this entity
-        if (newCell != null)
-        {         
-            foreach (NetworkEntity e in newCell.Listeners)
-            {                
-                NetworkManager.Instance.SendEntity(e.clientID, ent);
-            }
 
-            //// HACK, means a player for now.
-            if (!ent.locallyControlled)
-            {
-                // Add new entity to listeners
-                newCell.Listeners.Add(ent);
 
-                // Tell the new entity about all the other entities in the cell
-                NetworkManager.Instance.SendEntities(ent.clientID, newCell.Entities);
-            }
-        }
+        //if (enterCells!=null)
+        //{
+        //    //// HACK, means a player for now.
+        //    
+        //        foreach (GridCell cell in enterCells)
+        //        {
+        //            NetworkManager.Instance.SendEntities(ent.clientID, cell.Entities);                    
+        //        }                                                               
+        //    }
+        //}
+
+        // TODO: make this all work with multiple groups for propper ranged visibility
+
+
+
+        //// Tell old cell listeners to destroy this entity        
+        //if (oldCell != null)
+        //{
+        //    oldCell.Listeners.Remove(ent);
+
+        //    NetworkMessage msg = new NetworkMessage(NetworkMessageType.Entity_Destroy);
+        //    msg.Write(ent.networkable.ID);
+        //    foreach (NetworkEntity e in oldCell.Listeners)
+        //    {
+        //        NetworkManager.Instance.Send(e.clientID.ConnectionID, msg);
+        //    }
+
+        //    // Tell the entity to delete all entities in the old cell
+        //    NetworkMessage delCellMsg = new NetworkMessage(NetworkMessageType.Cell_Destroy);
+        //    delCellMsg.Write(oldCell.Index);
+        //    NetworkManager.Instance.Send(ent.clientID.ConnectionID, delCellMsg);
+        //}
+
+        //// Tell the new cell listeners about this entity
+        //if (newCell != null)
+        //{         
+        //    foreach (NetworkEntity e in newCell.Listeners)
+        //    {                
+        //        NetworkManager.Instance.SendEntity(e.clientID, ent);
+        //    }
+
+        //    //// HACK, means a player for now.
+        //    if (!ent.locallyControlled)
+        //    {
+        //        // Add new entity to listeners
+        //        newCell.Listeners.Add(ent);
+
+        //        // Tell the new entity about all the other entities in the cell
+        //        NetworkManager.Instance.SendEntities(ent.clientID, newCell.Entities);
+        //    }
+        //}
     }
 }
