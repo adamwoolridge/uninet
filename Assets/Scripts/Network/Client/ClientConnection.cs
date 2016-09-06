@@ -9,7 +9,8 @@ public static class ClientConnection
         {
             case NetworkMessageType.Entity_LocalPlayerCreated:
                 {
-                    CreateEntity(message.ReadUInt(), message.ReadUInt(), message.ReadString(), true);                    
+                    NetworkEntity clientEnt = CreateEntity(message.ReadUInt(), message.ReadUInt(), message.ReadString(), true);
+                    clientEnt.transform.FindChild("Camera").gameObject.SetActive(true);
                     return;
                 }
             case NetworkMessageType.Entity_UpdateTransform:
