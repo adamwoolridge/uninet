@@ -21,7 +21,6 @@ GameObject:
   - 4: {fileID: 4000011137346076}
   - 33: {fileID: 33000010781130074}
   - 23: {fileID: 23000012885556236}
-  - 95: {fileID: 95000013833200852}
   - 114: {fileID: 114000012608157726}
   m_Layer: 0
   m_Name: PalmTree01
@@ -79,23 +78,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012744743152}
   m_Mesh: {fileID: 4300000, guid: aeffcf4d7df9d4f7584c292dac537132, type: 3}
---- !u!95 &95000013833200852
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000012744743152}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: aeffcf4d7df9d4f7584c292dac537132, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
 --- !u!114 &114000012608157726
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -107,6 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9288100dc55bb824cb54a1d1ee1ad34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cellID: 0
   Path: PalmTree01
   TicksPerSecond: 10
   locallyControlled: 0
